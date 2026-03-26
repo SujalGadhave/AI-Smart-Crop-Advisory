@@ -52,9 +52,9 @@ def _extract_features(image: Image.Image) -> np.ndarray:
     std_channels = arr.reshape(-1, 3).std(axis=0)
     gray = arr.mean(axis=2)
     dark_fraction = float((gray < 0.35).mean())
-    brown_pixel_fraction = float(((arr[:, :, 0] > arr[:, :, 1] * 1.05) & (arr[:, :, 1] > arr[:, :, 2] * 0.9)).mean())
+    reddish_pixel_fraction = float(((arr[:, :, 0] > arr[:, :, 1] * 1.05) & (arr[:, :, 1] > arr[:, :, 2] * 0.9)).mean())
     contrast = float(np.std(gray))
-    return np.concatenate([mean_channels, std_channels, [dark_fraction, brown_pixel_fraction, contrast]])
+    return np.concatenate([mean_channels, std_channels, [dark_fraction, reddish_pixel_fraction, contrast]])
 
 
 def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radius: int, rng: np.random.Generator) -> np.ndarray:
@@ -94,7 +94,11 @@ def _train_and_save_model(path: Path) -> LogisticRegression:
             samples.append(_extract_features(img))
             targets.append(cls)
 
-    model = LogisticRegression(max_iter=MODEL_MAX_ITERATIONS, multi_class="multinomial")
+    model = LogisticRegression(
+        max_iter=MODEL_MAX_ITERATIONS,
+        multi_class="multinomial",
+        random_state=TRAINING_SEED,
+    )
     model.fit(np.stack(samples), targets)
     path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(model, path)
