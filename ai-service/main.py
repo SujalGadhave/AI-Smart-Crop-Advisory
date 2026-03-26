@@ -25,6 +25,7 @@ NOISE_STD = 18.0
 LATE_BLIGHT_DARKNESS_FACTOR = 0.8
 RED_TO_GREEN_RATIO_THRESHOLD = 1.05
 GREEN_TO_BLUE_RATIO_THRESHOLD = 0.9
+DARK_PIXEL_THRESHOLD = 0.35
 
 
 class PredictRequest(BaseModel):
@@ -56,19 +57,19 @@ def _extract_features(image: Image.Image) -> np.ndarray:
     - mean R, G, B
     - stddev R, G, B
     - fraction of dark pixels
-    - fraction of brown-tinted pixels (red > green*RED_TO_GREEN_RATIO_THRESHOLD and green > blue*GREEN_TO_BLUE_RATIO_THRESHOLD)
+    - fraction of brown-tinted pixels (red > green * RED_TO_GREEN_RATIO_THRESHOLD and green > blue * GREEN_TO_BLUE_RATIO_THRESHOLD)
     - grayscale contrast (stddev)
     """
     arr = np.asarray(image).astype(np.float32) / 255.0
     mean_channels = arr.reshape(-1, 3).mean(axis=0)
     std_channels = arr.reshape(-1, 3).std(axis=0)
     gray = arr.mean(axis=2)
-    dark_fraction = float((gray < 0.35).mean())
+    dark_fraction = float((gray < DARK_PIXEL_THRESHOLD).mean())
     brown_pixel_fraction = float(
         (
             (arr[:, :, 0] > arr[:, :, 1] * RED_TO_GREEN_RATIO_THRESHOLD)
             & (arr[:, :, 1] > arr[:, :, 2] * GREEN_TO_BLUE_RATIO_THRESHOLD)
-        ).mean()  # highlights yellow/brown lesions where red is slightly above green and green above blue
+        ).mean()  # highlights yellow/brown lesions where red is slightly above green and green is above blue
     )
     contrast = float(np.std(gray))
     return np.concatenate([mean_channels, std_channels, [dark_fraction, brown_pixel_fraction, contrast]])
