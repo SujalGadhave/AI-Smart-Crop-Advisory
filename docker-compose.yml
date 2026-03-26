@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: krishi
+      MYSQL_USER: krishi
+      MYSQL_PASSWORD: krishi
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  ai-service:
+    build: ./ai-service
+    ports:
+      - "8000:8000"
+
+  backend:
+    build: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/krishi?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: krishi
+      SPRING_DATASOURCE_PASSWORD: krishi
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      AI_SERVICE_URL: http://ai-service:8000/predict
+    depends_on:
+      mysql:
+        condition: service_healthy
+      ai-service:
+        condition: service_started
+    ports:
+      - "8080:8080"
