@@ -68,7 +68,7 @@ def _extract_features(image: Image.Image) -> np.ndarray:
         (
             (arr[:, :, 0] > arr[:, :, 1] * RED_TO_GREEN_RATIO_THRESHOLD)
             & (arr[:, :, 1] > arr[:, :, 2] * GREEN_TO_BLUE_RATIO_THRESHOLD)
-        ).mean()
+        ).mean()  # highlights yellow/brown lesions where red is slightly above green and green above blue
     )
     contrast = float(np.std(gray))
     return np.concatenate([mean_channels, std_channels, [dark_fraction, brown_pixel_fraction, contrast]])
@@ -95,7 +95,7 @@ def _synthetic_leaf(label: str, rng: np.random.Generator) -> Image.Image:
     elif label == "early_blight":
         leaf = _draw_spots(leaf, 18, (160, 120, 60), 6, rng)
     elif label == "late_blight":
-        leaf = (leaf * LATE_BLIGHT_DARKNESS_FACTOR).astype(np.uint8)
+        leaf = np.clip(leaf * LATE_BLIGHT_DARKNESS_FACTOR, 0, 255).astype(np.uint8)
         leaf = _draw_spots(leaf, 12, (70, 60, 70), 10, rng)
     elif label == "septoria_leaf_spot":
         leaf = _draw_spots(leaf, 30, (200, 200, 170), 3, rng)
