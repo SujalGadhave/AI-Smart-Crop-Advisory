@@ -23,6 +23,8 @@ SYNTHETIC_IMAGE_SIZE = 128
 BASE_LEAF_COLOR = np.array([40, 140, 50], dtype=np.float32)
 NOISE_STD = 18.0
 LATE_BLIGHT_DARKNESS_FACTOR = 0.8
+RED_TO_GREEN_RATIO_THRESHOLD = 1.05
+GREEN_TO_BLUE_RATIO_THRESHOLD = 0.9
 
 
 class PredictRequest(BaseModel):
@@ -53,9 +55,14 @@ def _extract_features(image: Image.Image) -> np.ndarray:
     std_channels = arr.reshape(-1, 3).std(axis=0)
     gray = arr.mean(axis=2)
     dark_fraction = float((gray < 0.35).mean())
-    warm_pixel_fraction = float(((arr[:, :, 0] > arr[:, :, 1] * 1.05) & (arr[:, :, 1] > arr[:, :, 2] * 0.9)).mean())
+    brown_pixel_fraction = float(
+        (
+            (arr[:, :, 0] > arr[:, :, 1] * RED_TO_GREEN_RATIO_THRESHOLD)
+            & (arr[:, :, 1] > arr[:, :, 2] * GREEN_TO_BLUE_RATIO_THRESHOLD)
+        ).mean()
+    )
     contrast = float(np.std(gray))
-    return np.concatenate([mean_channels, std_channels, [dark_fraction, warm_pixel_fraction, contrast]])
+    return np.concatenate([mean_channels, std_channels, [dark_fraction, brown_pixel_fraction, contrast]])
 
 
 def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radius: int, rng: np.random.Generator) -> np.ndarray:
