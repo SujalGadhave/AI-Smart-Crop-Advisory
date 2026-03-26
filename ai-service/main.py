@@ -1,8 +1,21 @@
-from fastapi import FastAPI
+import base64
+import binascii
+import io
+from functools import lru_cache
+from pathlib import Path
+from typing import Tuple
+
+import joblib
+import numpy as np
+from fastapi import FastAPI, HTTPException
+from PIL import Image, ImageDraw, UnidentifiedImageError
 from pydantic import BaseModel
-from typing import Dict
+from sklearn.linear_model import LogisticRegression
 
 app = FastAPI(title="KrishiMitra AI Service")
+
+MODEL_PATH = Path(__file__).with_name("disease_model.joblib")
+CLASSES = ["healthy", "early_blight", "late_blight", "septoria_leaf_spot"]
 
 
 class PredictRequest(BaseModel):
@@ -15,18 +28,93 @@ class PredictResponse(BaseModel):
     confidence: float
 
 
-# Simple demo classifier
-DEMO_RESULTS: Dict[str, Dict[str, float]] = {
-    "tomato": {"late_blight": 0.83},
-    "potato": {"early_blight": 0.78},
-    "corn": {"healthy": 0.91},
-}
+def _decode_image(image_base64: str) -> Image.Image:
+    try:
+        image_bytes = base64.b64decode(image_base64, validate=True)
+    except binascii.Error as exc:
+        raise HTTPException(status_code=400, detail="Invalid base64 image") from exc
+
+    try:
+        return Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    except UnidentifiedImageError as exc:
+        raise HTTPException(status_code=400, detail="Could not read image") from exc
+
+
+def _extract_features(image: Image.Image) -> np.ndarray:
+    arr = np.asarray(image).astype(np.float32) / 255.0
+    mean_channels = arr.reshape(-1, 3).mean(axis=0)
+    std_channels = arr.reshape(-1, 3).std(axis=0)
+    gray = arr.mean(axis=2)
+    dark_fraction = float((gray < 0.35).mean())
+    brownish = float(((arr[:, :, 0] > arr[:, :, 1] * 1.05) & (arr[:, :, 1] > arr[:, :, 2] * 0.9)).mean())
+    contrast = float(np.std(gray))
+    return np.concatenate([mean_channels, std_channels, [dark_fraction, brownish, contrast]])
+
+
+def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radius: int, rng: np.random.Generator) -> np.ndarray:
+    img = Image.fromarray(base)
+    draw = ImageDraw.Draw(img)
+    h, w, _ = base.shape
+    for _ in range(count):
+        x = int(rng.integers(radius, w - radius))
+        y = int(rng.integers(radius, h - radius))
+        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=tuple(color))
+    return np.asarray(img)
+
+
+def _synthetic_leaf(label: str, rng: np.random.Generator) -> Image.Image:
+    base_color = np.array([40, 140, 50], dtype=np.float32)
+    noise = rng.normal(0, 18, size=(128, 128, 3))
+    leaf = np.clip(base_color + noise, 0, 255).astype(np.uint8)
+
+    if label == "healthy":
+        pass
+    elif label == "early_blight":
+        leaf = _draw_spots(leaf, 18, (160, 120, 60), 6, rng)
+    elif label == "late_blight":
+        leaf = (leaf * 0.8).astype(np.uint8)
+        leaf = _draw_spots(leaf, 12, (70, 60, 70), 10, rng)
+    elif label == "septoria_leaf_spot":
+        leaf = _draw_spots(leaf, 30, (200, 200, 170), 3, rng)
+    return Image.fromarray(leaf)
+
+
+def _train_and_save_model(path: Path) -> LogisticRegression:
+    rng = np.random.default_rng(7)
+    samples = []
+    targets = []
+    for cls in CLASSES:
+        for _ in range(60):
+            img = _synthetic_leaf(cls, rng)
+            samples.append(_extract_features(img))
+            targets.append(cls)
+
+    model = LogisticRegression(max_iter=300, multi_class="multinomial")
+    model.fit(np.stack(samples), targets)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(model, path)
+    return model
+
+
+@lru_cache(maxsize=1)
+def _load_model() -> LogisticRegression:
+    if MODEL_PATH.exists():
+        return joblib.load(MODEL_PATH)
+    return _train_and_save_model(MODEL_PATH)
+
+
+def _predict_label(image: Image.Image) -> Tuple[str, float]:
+    model = _load_model()
+    features = _extract_features(image).reshape(1, -1)
+    proba = model.predict_proba(features)[0]
+    best_idx = int(np.argmax(proba))
+    return CLASSES[best_idx], float(proba[best_idx])
 
 
 @app.post("/predict", response_model=PredictResponse)
 async def predict(payload: PredictRequest):
-    disease_map = DEMO_RESULTS.get(payload.crop_type.lower(), {"unknown": 0.4})
-    disease, confidence = next(iter(disease_map.items()))
+    image = _decode_image(payload.image_base64)
+    disease, confidence = _predict_label(image)
     return PredictResponse(disease=disease, confidence=confidence)
 
 
