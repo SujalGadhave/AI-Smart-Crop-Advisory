@@ -28,6 +28,7 @@ cd ai-service
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
+The AI service now builds a lightweight color-texture classifier from seeded leaf samples on first use and caches the trained weights at `ai-service/disease_model.joblib`, so inference runs fully offline.
 
 ### Frontend
 ```bash
