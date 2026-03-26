@@ -57,7 +57,7 @@ def _extract_features(image: Image.Image) -> np.ndarray:
     - mean R, G, B
     - stddev R, G, B
     - fraction of dark pixels
-    - fraction of brown-tinted pixels (red > green * RED_TO_GREEN_RATIO_THRESHOLD and green > blue * GREEN_TO_BLUE_RATIO_THRESHOLD)
+    - fraction of brown-tinted pixels (red/green > RED_TO_GREEN_RATIO_THRESHOLD and green/blue > GREEN_TO_BLUE_RATIO_THRESHOLD)
     - grayscale contrast (stddev)
     """
     arr = np.asarray(image).astype(np.float32) / 255.0
@@ -80,10 +80,13 @@ def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radiu
     img = Image.fromarray(base)
     draw = ImageDraw.Draw(img)
     h, w, _ = base.shape
+    effective_radius = min(radius, (w - 1) // 2, (h - 1) // 2)
+    if effective_radius <= 0:
+        return base
     for _ in range(count):
-        x = int(rng.integers(radius, w - radius))
-        y = int(rng.integers(radius, h - radius))
-        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=color)
+        x = int(rng.integers(effective_radius, w - effective_radius))
+        y = int(rng.integers(effective_radius, h - effective_radius))
+        draw.ellipse((x - effective_radius, y - effective_radius, x + effective_radius, y + effective_radius), fill=color)
     return np.asarray(img)
 
 
