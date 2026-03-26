@@ -16,6 +16,8 @@ app = FastAPI(title="KrishiMitra AI Service")
 
 MODEL_PATH = Path(__file__).with_name("disease_model.joblib")
 CLASSES = ["healthy", "early_blight", "late_blight", "septoria_leaf_spot"]
+TRAINING_SEED = 7
+SAMPLES_PER_CLASS = 60
 
 
 class PredictRequest(BaseModel):
@@ -58,7 +60,7 @@ def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radiu
     for _ in range(count):
         x = int(rng.integers(radius, w - radius))
         y = int(rng.integers(radius, h - radius))
-        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=tuple(color))
+        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=color)
     return np.asarray(img)
 
 
@@ -80,11 +82,11 @@ def _synthetic_leaf(label: str, rng: np.random.Generator) -> Image.Image:
 
 
 def _train_and_save_model(path: Path) -> LogisticRegression:
-    rng = np.random.default_rng(7)
+    rng = np.random.default_rng(TRAINING_SEED)
     samples = []
     targets = []
     for cls in CLASSES:
-        for _ in range(60):
+        for _ in range(SAMPLES_PER_CLASS):
             img = _synthetic_leaf(cls, rng)
             samples.append(_extract_features(img))
             targets.append(cls)
