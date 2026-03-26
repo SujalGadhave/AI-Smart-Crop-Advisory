@@ -69,13 +69,14 @@ def _extract_features(image: Image.Image) -> np.ndarray:
         (
             (arr[:, :, 0] > arr[:, :, 1] * RED_TO_GREEN_RATIO_THRESHOLD)
             & (arr[:, :, 1] > arr[:, :, 2] * GREEN_TO_BLUE_RATIO_THRESHOLD)
-        ).mean()  # highlights yellow/brown lesions where red is slightly above green and green is above blue
+        ).mean()
     )
     contrast = float(np.std(gray))
     return np.concatenate([mean_channels, std_channels, [dark_fraction, brown_pixel_fraction, contrast]])
 
 
 def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radius: int, rng: np.random.Generator) -> np.ndarray:
+    """Draw circular lesions of a given color and radius onto the leaf image."""
     img = Image.fromarray(base)
     draw = ImageDraw.Draw(img)
     h, w, _ = base.shape
@@ -127,12 +128,14 @@ def _train_and_save_model(path: Path) -> LogisticRegression:
 
 @lru_cache(maxsize=1)
 def _load_model() -> LogisticRegression:
+    """Load a cached model from disk or trigger training if no artifact exists."""
     if MODEL_PATH.exists():
         return joblib.load(MODEL_PATH)
     return _train_and_save_model(MODEL_PATH)
 
 
 def _predict_label(image: Image.Image) -> Tuple[str, float]:
+    """Extract features and return the most probable class with its confidence."""
     model = _load_model()
     features = _extract_features(image).reshape(1, -1)
     proba = model.predict_proba(features)[0]
@@ -142,6 +145,7 @@ def _predict_label(image: Image.Image) -> Tuple[str, float]:
 
 @app.post("/predict", response_model=PredictResponse)
 async def predict(payload: PredictRequest):
+    """Infer the plant disease from a base64-encoded image payload."""
     image = _decode_image(payload.image_base64)
     disease, confidence = _predict_label(image)
     return PredictResponse(disease=disease, confidence=confidence)
