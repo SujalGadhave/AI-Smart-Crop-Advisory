@@ -22,6 +22,7 @@ MODEL_MAX_ITERATIONS = 300
 SYNTHETIC_IMAGE_SIZE = 128
 BASE_LEAF_COLOR = np.array([40, 140, 50], dtype=np.float32)
 NOISE_STD = 18.0
+LATE_BLIGHT_DARKNESS_FACTOR = 0.8
 
 
 class PredictRequest(BaseModel):
@@ -52,9 +53,9 @@ def _extract_features(image: Image.Image) -> np.ndarray:
     std_channels = arr.reshape(-1, 3).std(axis=0)
     gray = arr.mean(axis=2)
     dark_fraction = float((gray < 0.35).mean())
-    reddish_pixel_fraction = float(((arr[:, :, 0] > arr[:, :, 1] * 1.05) & (arr[:, :, 1] > arr[:, :, 2] * 0.9)).mean())
+    warm_pixel_fraction = float(((arr[:, :, 0] > arr[:, :, 1] * 1.05) & (arr[:, :, 1] > arr[:, :, 2] * 0.9)).mean())
     contrast = float(np.std(gray))
-    return np.concatenate([mean_channels, std_channels, [dark_fraction, reddish_pixel_fraction, contrast]])
+    return np.concatenate([mean_channels, std_channels, [dark_fraction, warm_pixel_fraction, contrast]])
 
 
 def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radius: int, rng: np.random.Generator) -> np.ndarray:
@@ -77,7 +78,7 @@ def _synthetic_leaf(label: str, rng: np.random.Generator) -> Image.Image:
     elif label == "early_blight":
         leaf = _draw_spots(leaf, 18, (160, 120, 60), 6, rng)
     elif label == "late_blight":
-        leaf = (leaf * 0.8).astype(np.uint8)
+        leaf = (leaf * LATE_BLIGHT_DARKNESS_FACTOR).astype(np.uint8)
         leaf = _draw_spots(leaf, 12, (70, 60, 70), 10, rng)
     elif label == "septoria_leaf_spot":
         leaf = _draw_spots(leaf, 30, (200, 200, 170), 3, rng)
