@@ -16,7 +16,7 @@ app = FastAPI(title="KrishiMitra AI Service")
 
 MODEL_PATH = Path(__file__).with_name("disease_model.joblib")
 CLASSES = ["healthy", "early_blight", "late_blight", "septoria_leaf_spot"]
-TRAINING_SEED = 7
+MODEL_RANDOM_SEED = 7
 SAMPLES_PER_CLASS = 60
 MODEL_MAX_ITERATIONS = 300
 SYNTHETIC_IMAGE_SIZE = 128
@@ -50,6 +50,15 @@ def _decode_image(image_base64: str) -> Image.Image:
 
 
 def _extract_features(image: Image.Image) -> np.ndarray:
+    """Extract simple color/texture features for classification.
+
+    Features (9 total):
+    - mean R, G, B
+    - stddev R, G, B
+    - fraction of dark pixels
+    - fraction of brown-tinted pixels (red > green*RED_TO_GREEN_RATIO_THRESHOLD and green > blue*GREEN_TO_BLUE_RATIO_THRESHOLD)
+    - grayscale contrast (stddev)
+    """
     arr = np.asarray(image).astype(np.float32) / 255.0
     mean_channels = arr.reshape(-1, 3).mean(axis=0)
     std_channels = arr.reshape(-1, 3).std(axis=0)
@@ -77,6 +86,7 @@ def _draw_spots(base: np.ndarray, count: int, color: Tuple[int, int, int], radiu
 
 
 def _synthetic_leaf(label: str, rng: np.random.Generator) -> Image.Image:
+    """Create a synthetic leaf image for a given disease label using color noise and spots."""
     noise = rng.normal(0, NOISE_STD, size=(SYNTHETIC_IMAGE_SIZE, SYNTHETIC_IMAGE_SIZE, 3))
     leaf = np.clip(BASE_LEAF_COLOR + noise, 0, 255).astype(np.uint8)
 
@@ -93,7 +103,8 @@ def _synthetic_leaf(label: str, rng: np.random.Generator) -> Image.Image:
 
 
 def _train_and_save_model(path: Path) -> LogisticRegression:
-    rng = np.random.default_rng(TRAINING_SEED)
+    """Train a lightweight logistic regression on synthetic leaves and persist to disk."""
+    rng = np.random.default_rng(MODEL_RANDOM_SEED)
     samples = []
     targets = []
     for cls in CLASSES:
@@ -105,7 +116,7 @@ def _train_and_save_model(path: Path) -> LogisticRegression:
     model = LogisticRegression(
         max_iter=MODEL_MAX_ITERATIONS,
         multi_class="multinomial",
-        random_state=TRAINING_SEED,
+        random_state=MODEL_RANDOM_SEED,
     )
     model.fit(np.stack(samples), targets)
     path.parent.mkdir(parents=True, exist_ok=True)
