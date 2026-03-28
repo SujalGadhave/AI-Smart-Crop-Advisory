@@ -36,7 +36,8 @@ public class MarketController {
     );
 
     @GetMapping
-    public MarketResponse getMarket(@RequestParam String cropType, @RequestParam(required = false, defaultValue = "pune") String city) {
+        public MarketResponse getMarket(@RequestParam("cropType") String cropType,
+                                                                        @RequestParam(value = "city", required = false, defaultValue = "pune") String city) {
         return seeds.getOrDefault(cropType.toLowerCase(), seeds.get("tomato"));
     }
 }

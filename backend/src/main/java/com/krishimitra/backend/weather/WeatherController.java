@@ -24,7 +24,7 @@ public class WeatherController {
     }
 
     @GetMapping
-    public WeatherResponse getWeather(@RequestParam String city) {
+    public WeatherResponse getWeather(@RequestParam("city") String city) {
         String url = "https://api.open-meteo.com/v1/forecast?latitude=18.5204&longitude=73.8567&current_weather=true";
         double temperature = 30;
         double windSpeed = 2.5;

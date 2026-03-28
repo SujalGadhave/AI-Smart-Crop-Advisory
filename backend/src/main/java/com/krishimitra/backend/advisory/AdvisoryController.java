@@ -39,9 +39,9 @@ public class AdvisoryController {
     );
 
     @GetMapping
-    public AdvisoryResponse getAdvisory(@RequestParam String cropType,
-                                        @RequestParam(required = false, defaultValue = "kharif") String season,
-                                        @RequestParam(required = false, defaultValue = "") String city) {
+        public AdvisoryResponse getAdvisory(@RequestParam("cropType") String cropType,
+                                                                                @RequestParam(value = "season", required = false, defaultValue = "kharif") String season,
+                                                                                @RequestParam(value = "city", required = false, defaultValue = "") String city) {
         AdvisoryResponse response = advisoryMap.getOrDefault(cropType.toLowerCase(), advisoryMap.get("tomato"));
         return new AdvisoryResponse(response.getCropType(), season,
                 response.getFertilizer(), response.getIrrigation(), response.getPestManagement(), response.getWeatherWarnings());

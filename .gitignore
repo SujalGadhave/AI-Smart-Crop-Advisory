@@ -11,6 +11,8 @@ frontend/dist
 # Java
 backend/target
 .mvn/
+backend/apache-maven-3.9.6/
+backend/apache-maven-3.9.6.zip
 **/.classpath
 **/.project
 **/.settings
