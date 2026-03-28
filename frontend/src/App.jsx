@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { t } from './translations'
@@ -110,6 +110,7 @@ function AuthForm({ mode, setUser, setToken, lang }) {
       localStorage.setItem('km_user', JSON.stringify({ name: data.name, email: data.email, city: data.city }))
       navigate('/')
     } catch (err) {
+      console.error('User authentication failed', err)
       setError('Unable to authenticate. Check details and try again.')
     } finally {
       setLoading(false)
@@ -243,6 +244,7 @@ function UploadPage({ token, setLastReport, lang }) {
         setLastReport(data)
         navigate('/result')
       } catch (err) {
+        console.error('Image detection request failed', err)
         setStatus('Unable to detect right now. Please retry.')
       }
     }
@@ -318,6 +320,7 @@ function AdvisoryPage({ lang, token }) {
       setAdvisory(data)
       setStatus('')
     } catch (err) {
+      console.error('Advisory API request failed', err)
       setStatus('Unable to load advisory right now.')
     }
   }
@@ -444,6 +447,7 @@ function AppShell() {
         const { data } = await api.get('/api/weather', { params: { city } })
         setWeather(data)
       } catch (err) {
+        console.error('Weather API request failed', err)
         setWeather({ city: 'Pune', temperature: 30, windSpeed: 2.5, condition: 'clear', advice: 'Stay hydrated' })
       }
     }
