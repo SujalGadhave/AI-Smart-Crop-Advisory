@@ -7,6 +7,23 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
 })
 
+function decodeJwtPayload(token) {
+  if (!token || typeof token !== 'string') {
+    return null
+  }
+  const parts = token.split('.')
+  if (parts.length !== 3) {
+    return null
+  }
+  try {
+    const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+    const padding = '='.repeat((4 - (base64.length % 4)) % 4)
+    return JSON.parse(atob(base64 + padding))
+  } catch {
+    return null
+  }
+}
+
 const crops = [
   { value: 'tomato', label: 'Tomato' },
   { value: 'potato', label: 'Potato' },
@@ -215,7 +232,7 @@ function Dashboard({ lang, lastReport, weather }) {
   )
 }
 
-function UploadPage({ token, setLastReport, lang }) {
+function UploadPage({ token, setLastReport, lang, onAuthFailure }) {
   const [file, setFile] = useState(null)
   const [cropType, setCropType] = useState('tomato')
   const [status, setStatus] = useState('')
@@ -223,7 +240,8 @@ function UploadPage({ token, setLastReport, lang }) {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    if (!token) {
+    const normalizedToken = typeof token === 'string' ? token.trim() : ''
+    if (!normalizedToken || normalizedToken === 'undefined' || normalizedToken === 'null') {
       setStatus(t(lang, 'tokenMissing'))
       return
     }
@@ -239,12 +257,19 @@ function UploadPage({ token, setLastReport, lang }) {
         const { data } = await api.post(
           '/api/crop/detect',
           { cropType, imageBase64 },
-          { headers: { Authorization: `Bearer ${token}` } }
+          { headers: { Authorization: `Bearer ${normalizedToken}` } }
         )
         setLastReport(data)
         navigate('/result')
       } catch (err) {
         console.error('Image detection request failed', err)
+        const statusCode = err?.response?.status
+        if (statusCode === 401 || statusCode === 403) {
+          setStatus('Session expired. Please login again.')
+          onAuthFailure?.()
+          navigate('/login')
+          return
+        }
         setStatus('Unable to detect right now. Please retry.')
       }
     }
@@ -379,17 +404,17 @@ function AdviceCard({ title, items }) {
   )
 }
 
-function MarketPage({ lang }) {
+function MarketPage({ lang, user }) {
   const [cropType, setCropType] = useState('tomato')
   const [market, setMarket] = useState(null)
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await api.get('/api/market', { params: { cropType } })
+      const { data } = await api.get('/api/market', { params: { cropType, city: user?.city || 'pune' } })
       setMarket(data)
     }
     load()
-  }, [cropType])
+  }, [cropType, user])
 
   return (
     <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl">
@@ -440,6 +465,24 @@ function AppShell() {
   const [lastReport, setLastReport] = useState(null)
   const [weather, setWeather] = useState(null)
 
+  const clearSession = () => {
+    setToken('')
+    setUser(null)
+    localStorage.removeItem('km_token')
+    localStorage.removeItem('km_user')
+  }
+
+  useEffect(() => {
+    if (!token) {
+      return
+    }
+    const payload = decodeJwtPayload(token)
+    const expiresAtMs = payload?.exp ? payload.exp * 1000 : 0
+    if (!payload || (expiresAtMs > 0 && Date.now() >= expiresAtMs)) {
+      clearSession()
+    }
+  }, [token])
+
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -455,10 +498,7 @@ function AppShell() {
   }, [user])
 
   const onLogout = () => {
-    setToken('')
-    setUser(null)
-    localStorage.removeItem('km_token')
-    localStorage.removeItem('km_user')
+    clearSession()
   }
 
   return (
@@ -467,10 +507,13 @@ function AppShell() {
         <Route path="/" element={<Dashboard lang={lang} lastReport={lastReport} weather={weather} />} />
         <Route path="/login" element={<AuthForm mode="login" setUser={setUser} setToken={setToken} lang={lang} />} />
         <Route path="/register" element={<AuthForm mode="register" setUser={setUser} setToken={setToken} lang={lang} />} />
-        <Route path="/upload" element={<UploadPage token={token} setLastReport={setLastReport} lang={lang} />} />
+        <Route
+          path="/upload"
+          element={<UploadPage token={token} setLastReport={setLastReport} lang={lang} onAuthFailure={clearSession} />}
+        />
         <Route path="/result" element={<ResultPage lastReport={lastReport} lang={lang} />} />
         <Route path="/advisory" element={<AdvisoryPage lang={lang} token={token} />} />
-        <Route path="/market" element={<MarketPage lang={lang} />} />
+        <Route path="/market" element={<MarketPage lang={lang} user={user} />} />
       </Routes>
     </Layout>
   )
