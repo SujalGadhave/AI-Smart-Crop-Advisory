@@ -1,4 +1,4 @@
-# KrishiMitra Hackathon Prototype
+# AI Smart Crop Advisory Prototype
 
 A demo-friendly prototype of KrishiMitra with the original three-tier architecture:
 
