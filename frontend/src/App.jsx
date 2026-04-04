@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { t } from './translations'
+import KM from './assets/KM.jpg'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faCloudSunRain } from '@fortawesome/free-solid-svg-icons'
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
@@ -33,17 +37,52 @@ const crops = [
 function Layout({ children, lang, setLang, user, onLogout }) {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
+
+      {/* 🔹 HEADER */}
       <div className="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-full bg-green-600 text-slate-900 font-bold grid place-items-center">KM</div>
+
+        {/* ✅ TOP ROW (Logo + Title ONLY) */}
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-center">
+          <div className="flex items-center  gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden">
+              <img src={KM} alt="" className="h-full w-full object-contain" />
+            </div>
             <div>
               <p className="text-lg font-semibold">{t(lang, 'title')}</p>
-              <p className="text-xs text-slate-400">Plant village focused demo</p>
+              <p className="text-xs text-slate-400">Empowering Farmers with AI</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 text-sm">
-            <select
+        </div>
+
+        {/* ✅ SECOND ROW (Dashboard + Language + Login/Register) */}
+        <div className="max-w-6xl mx-auto px-4 pb-3 flex items-center justify-between text-sm text-slate-300">
+
+          {/* LEFT - NAV LINKS */}
+          <div className="flex gap-3">
+            <NavLink to="/" label={t(lang, 'dashboard')} />
+
+            <NavLink 
+              to="/upload" 
+              label={
+                <span className='flex items-center gap-2'>
+                  <FontAwesomeIcon 
+                    icon={faArrowUpFromBracket}
+                    className="text-emerald-400"
+                  />
+                  {t(lang, 'upload')}
+                </span>
+              }
+            />
+
+            <NavLink to="/result" label={t(lang, 'result')} />
+            <NavLink to="/advisory" label={t(lang, 'advisory')} />
+            <NavLink to="/market" label={t(lang, 'market')} />
+          </div>
+
+          {/* RIGHT - LANG + AUTH */}
+          <div className="flex items-center gap-3">
+
+            <select 
               className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2"
               value={lang}
               onChange={(e) => setLang(e.target.value)}
@@ -52,8 +91,9 @@ function Layout({ children, lang, setLang, user, onLogout }) {
               <option value="hi">हिंदी</option>
               <option value="mr">मराठी</option>
             </select>
+
             {user ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <span className="text-slate-300 hidden sm:inline">{user.name}</span>
                 <button
                   onClick={onLogout}
@@ -63,7 +103,7 @@ function Layout({ children, lang, setLang, user, onLogout }) {
                 </button>
               </div>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <Link
                   to="/login"
                   className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700"
@@ -78,17 +118,15 @@ function Layout({ children, lang, setLang, user, onLogout }) {
                 </Link>
               </div>
             )}
+
           </div>
         </div>
-        <div className="max-w-6xl mx-auto px-4 pb-3 flex gap-3 text-sm text-slate-300">
-          <NavLink to="/" label={t(lang, 'dashboard')} />
-          <NavLink to="/upload" label={t(lang, 'upload')} />
-          <NavLink to="/result" label={t(lang, 'result')} />
-          <NavLink to="/advisory" label={t(lang, 'advisory')} />
-          <NavLink to="/market" label={t(lang, 'market')} />
-        </div>
+
       </div>
-      <div className="max-w-6xl mx-auto px-4 py-6">{children}</div>
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        {children}
+      </div>
+
     </div>
   )
 }
@@ -189,23 +227,38 @@ function Input({ label, ...props }) {
 }
 
 function Dashboard({ lang, lastReport, weather }) {
+
+useEffect(() => {
+  if (window.UnicornStudio) {
+    window.UnicornStudio.init()
+  }
+}, [])
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="md:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-800 p-6 rounded-2xl">
-        <p className="text-sm text-emerald-300 uppercase tracking-wide">Demo flow</p>
-        <h2 className="text-2xl font-semibold mt-2">{t(lang, 'subtitle')}</h2>
-        <p className="text-slate-400 mt-3">Login → Upload → Result → Advisory → Market</p>
+    <div className=" relative grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="md:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-800 p-6  rounded-2xl">
+        <div
+      data-us-project="7ADJ05zecUtdRTRUEl7w"
+      className="absolute top-0 left-0 w-full h-full z-0"
+  ></div>
+        <p className="text-sm text-emerald-300 uppercase tracking-wide">YOUR AGRICULTURAL COMMAND CENTER</p>
+        <h2 className="text-2xl font-semibold  mt-2">- Protect Your Investment and Increase Yields</h2>
+        <h4 className="text-lg font-semibold  mt-2">- Instantly scan , access expert plans,and track live prices</h4>
+        <p className="text-slate-400  mt-2">Login → Upload → Result → Advisory → Market</p>
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
           {[t(lang, 'upload'), t(lang, 'result'), t(lang, 'advisory'), t(lang, 'market')].map((step) => (
             <div key={step} className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-4 text-center">
               <p className="font-semibold text-emerald-200">{step}</p>
-              <p className="text-slate-500">Prototype ready</p>
+              
             </div>
           ))}
         </div>
       </div>
       <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
-        <p className="text-sm text-emerald-300">{t(lang, 'weather')}</p>
+        <p className="  p-2 text-lg font-semibold text-emerald-300"
+    >        <FontAwesomeIcon className="text-white pr-1 text-3xl"
+                icon={faCloudSunRain}
+              />
+              Weather Forecast</p>
         {weather ? (
           <div className="mt-2 space-y-1">
             <p className="text-lg font-semibold">{weather.city}</p>
