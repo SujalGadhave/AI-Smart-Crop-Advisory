@@ -3,6 +3,9 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation } from 're
 import axios from 'axios'
 import { t } from './translations'
 import KM from './assets/KM.jpg'
+import BG from './assets/BG.png'
+import sun from './assets/sun.jpg'
+import beg from './assets/beg.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUpFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { faCloudSunRain } from '@fortawesome/free-solid-svg-icons'
@@ -36,54 +39,41 @@ const crops = [
 
 function Layout({ children, lang, setLang, user, onLogout }) {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-
-      {/* 🔹 HEADER */}
-      <div className="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-10">
-
-        {/* ✅ TOP ROW (Logo + Title ONLY) */}
+    <div className="min-h-screen relative text-white overflow-hidden">
+      <img 
+        src={BG} 
+        alt="bg" 
+        className="fixed top-0 left-0 w-full h-full object-cover -z-10"
+      />
+      <div className="fixed inset-0 bg-black/40 -z-10"></div>
+      <div className="border-b border-white/20 bg-black/30 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-center">
-          <div className="flex items-center  gap-3">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full overflow-hidden">
               <img src={KM} alt="" className="h-full w-full object-contain" />
             </div>
             <div>
               <p className="text-lg font-semibold">{t(lang, 'title')}</p>
-              <p className="text-xs text-slate-400">Empowering Farmers with AI</p>
+              <p className="text-xs text-white/70">{t(lang, 'slogan')}</p>
             </div>
           </div>
         </div>
-
-        {/* ✅ SECOND ROW (Dashboard + Language + Login/Register) */}
-        <div className="max-w-6xl mx-auto px-4 pb-3 flex items-center justify-between text-sm text-slate-300">
-
-          {/* LEFT - NAV LINKS */}
+        <div className="max-w-6xl mx-auto px-4 pb-3 flex items-center justify-between text-sm text-white/80">
           <div className="flex gap-3">
             <NavLink to="/" label={t(lang, 'dashboard')} />
-
-            <NavLink 
-              to="/upload" 
-              label={
-                <span className='flex items-center gap-2'>
-                  <FontAwesomeIcon 
-                    icon={faArrowUpFromBracket}
-                    className="text-emerald-400"
-                  />
-                  {t(lang, 'upload')}
-                </span>
-              }
-            />
-
+            <NavLink to="/upload" label={
+              <span className="flex items-center gap-2">
+                <FontAwesomeIcon icon={faArrowUpFromBracket} className="text-emerald-400"/>
+                {t(lang, 'upload')}
+              </span>
+            }/>
             <NavLink to="/result" label={t(lang, 'result')} />
             <NavLink to="/advisory" label={t(lang, 'advisory')} />
             <NavLink to="/market" label={t(lang, 'market')} />
           </div>
-
-          {/* RIGHT - LANG + AUTH */}
-          <div className="flex items-center gap-3">
-
+          <div className="flex items-center gap-3 relative z-50">
             <select 
-              className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-2"
+              className="bg-white/10 text-black hover:bg-white/20 border border-white/20 rounded-lg px-3 py-2 relative z-50"
               value={lang}
               onChange={(e) => setLang(e.target.value)}
             >
@@ -94,36 +84,29 @@ function Layout({ children, lang, setLang, user, onLogout }) {
 
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="text-slate-300 hidden sm:inline">{user.name}</span>
+                <span className="hidden sm:inline">{user.name}</span>
                 <button
                   onClick={onLogout}
-                  className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700"
+                  className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20"
                 >
                   {t(lang, 'logout')}
                 </button>
               </div>
             ) : (
               <div className="flex gap-3">
-                <Link
-                  to="/login"
-                  className="px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg hover:bg-slate-700"
-                >
+                <Link to="/login" className="px-3 py-2 bg-white/10 border border-white/20 rounded-lg hover:bg-white/20">
                   {t(lang, 'login')}
                 </Link>
-                <Link
-                  to="/register"
-                  className="px-3 py-2 bg-emerald-500 text-slate-900 font-semibold rounded-lg hover:bg-emerald-400"
-                >
+                <Link to="/register" className="px-3 py-2 bg-emerald-400 text-black font-semibold rounded-lg hover:bg-emerald-300">
                   {t(lang, 'register')}
                 </Link>
               </div>
             )}
-
           </div>
         </div>
 
       </div>
-      <div className="max-w-6xl mx-auto px-4 py-6">
+      <div className="max-w-6xl mx-auto px-4 py-6 relative z-10">
         {children}
       </div>
 
@@ -235,30 +218,61 @@ useEffect(() => {
 }, [])
   return (
     <div className=" relative grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="md:col-span-2 bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-800 p-6  rounded-2xl">
-        <div
-      data-us-project="7ADJ05zecUtdRTRUEl7w"
-      className="absolute top-0 left-0 w-full h-full z-0"
-  ></div>
-        <p className="text-sm text-emerald-300 uppercase tracking-wide">YOUR AGRICULTURAL COMMAND CENTER</p>
-        <h2 className="text-2xl font-semibold  mt-2">- Protect Your Investment and Increase Yields</h2>
-        <h4 className="text-lg font-semibold  mt-2">- Instantly scan , access expert plans,and track live prices</h4>
-        <p className="text-slate-400  mt-2">Login → Upload → Result → Advisory → Market</p>
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-          {[t(lang, 'upload'), t(lang, 'result'), t(lang, 'advisory'), t(lang, 'market')].map((step) => (
-            <div key={step} className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-4 text-center">
-              <p className="font-semibold text-emerald-200">{step}</p>
-              
-            </div>
-          ))}
+
+      <div className="md:col-span-2 relative p-5 rounded-2xl shadow-lg overflow-hidden">
+  <img
+    src={beg} 
+    alt="farm"
+    className="absolute inset-0 w-full h-full object-cover"
+  />
+  <div className="absolute inset-0 bg-black/60"></div>
+  
+  <div className="relative z-10">
+
+    <p className="text-sm text-emerald-300 uppercase tracking-wide">
+      {t(lang, 'hub')}
+    </p>
+
+    <h2 className="text-2xl font-semibold mt-2">
+      {t(lang ,'protect')}
+    </h2>
+
+    <h4 className="text-lg font-semibold mt-2">
+      {t(lang, 'scan')}
+    </h4>
+
+    <p className="text-white/80 mt-2">
+      {t(lang, 'flow')}
+    </p>
+
+    <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+      {[t(lang, 'upload'), t(lang, 'result'), t(lang, 'advisory'), t(lang, 'market')].map((step) => (
+        
+        <div 
+          key={step} 
+          className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 px-3 py-4 text-center hover:bg-white/20 transition"
+        >
+          <p className="font-semibold text-white">{step}</p>
         </div>
-      </div>
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl">
+
+      ))}
+    </div>
+
+  </div>
+</div>
+      <div className="bg-white/10 backdrop-blur-sm  p-5 rounded-2xl shadow-lg overflow-hidden">
+        <img
+          src={sun} 
+          alt="sun"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black/60"></div>
+        <div className='relative z-10'>
         <p className="  p-2 text-lg font-semibold text-emerald-300"
     >        <FontAwesomeIcon className="text-white pr-1 text-3xl"
                 icon={faCloudSunRain}
               />
-              Weather Forecast</p>
+              {t(lang, 'weather')}</p>
         {weather ? (
           <div className="mt-2 space-y-1">
             <p className="text-lg font-semibold">{weather.city}</p>
@@ -269,8 +283,9 @@ useEffect(() => {
           <p className="text-slate-400">Loading weather…</p>
         )}
       </div>
-      <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl md:col-span-2">
-        <p className="text-sm text-emerald-300">{t(lang, 'lastDetection')}</p>
+      </div>
+      <div className="bg-white/10 backdrop p-5 rounded-2xl shadow-lg">
+        <p className="text-md text-emerald-300">{t(lang, 'lastDetection')}</p>
         {lastReport ? (
           <div className="mt-3 flex flex-col gap-1">
             <p className="text-lg font-semibold capitalize">{lastReport.diseaseName}</p>
@@ -278,7 +293,7 @@ useEffect(() => {
             <p className="text-slate-400 text-sm">Treatment: {lastReport.treatment}</p>
           </div>
         ) : (
-          <p className="text-slate-400 mt-2">{t(lang, 'detectionFallback')}</p>
+          <p className="text-slate-300 mt-2">{t(lang, 'detectionFallback')}</p>
         )}
       </div>
     </div>
@@ -335,7 +350,7 @@ function UploadPage({ token, setLastReport, lang, onAuthFailure }) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+    <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-sm border border-white/20 p-6 rounded-2xl shadow-lg ">
       <h2 className="text-2xl font-semibold mb-2">{t(lang, 'upload')}</h2>
       <p className="text-slate-400 mb-4">{t(lang, 'uploadPrompt')}</p>
       <form onSubmit={onSubmit} className="space-y-4">
@@ -392,7 +407,11 @@ function ResultPage({ lastReport, lang }) {
   const diseaseLabel = (lastReport.diseaseName || 'Unknown').replace(/_/g, ' ')
 
   return (
+<<<<<<< HEAD
+    <div className="max-w-3xl mx-auto bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg ">
+=======
     <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+>>>>>>> 9dcf8b168b3be052829bf366288462e1c11e6fad
       <p className="text-sm text-emerald-300 uppercase tracking-wide">{t(lang, 'result')}</p>
 
       <div className="flex items-center gap-3 flex-wrap">

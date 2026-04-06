@@ -22,8 +22,13 @@ export const translations = {
     detectionFallback: "No detection yet. Upload a leaf to start.",
     advisoryBlurb: "Rule-based recommendations seeded for demo.",
     marketBlurb: "Seeded mandi prices with small trend chart.",
-    weather: "Weather snapshot",
+    weather: "Weather Forecast",
     tokenMissing: "Please login to continue.",
+    slogan:"Empowering farmers with AI",
+    protect:"Protect Your Investment and Increase Yields",
+    scan:"Instantly scan, access expert plans, and track live prices",
+    flow:"Login → Upload → Result → Advisory → Market",
+    hub:"Smart Farming Hub"
   },
   hi: {
     title: "कृषि मित्र",
@@ -50,6 +55,12 @@ export const translations = {
     marketBlurb: "बीजित मंडी डेटा और ट्रेंड।",
     weather: "मौसम",
     tokenMissing: "कृपया जारी रखने के लिए लॉगिन करें।",
+    slogan:"किसानों को एआई के साथ सशक्त बनाना",
+    protect:"अपनी फसल की सुरक्षा करें और उत्पादन बढ़ाएं",
+    scan:"तुरंत स्कैन करें, विशेषज्ञ योजनाओं तक पहुंचें, और लाइव कीमतों को ट्रैक करें",
+    flow:"लॉगिन → अपलोड → परिणाम → सलाह → मंडी",
+    hub:"स्मार्ट खेती हब"
+
   },
   mr: {
     title: "कृषीमित्र",
@@ -76,6 +87,12 @@ export const translations = {
     marketBlurb: "बीजित मंडी दर आणि ट्रेंड.",
     weather: "हवामान",
     tokenMissing: "पुढे जाण्यासाठी कृपया लॉगिन करा.",
+    slogan:"किसानांना एआई के साथ सशक्त बनाना",
+    protect:"आपल्या गुंतवणुकीचे संरक्षण करा आणि उत्पादन वाढवा",
+    scan:"तुरंत स्कॅन करा, तज्ञ योजना मिळवा, आणि लाइव किमती ट्रॅक करा",
+    flow:"लॉगिन → अपलोड → परिणाम → सलाह → बाजार",
+    hub:"स्मार्ट फार्मिंग हब"
+    
   }
 };
 
