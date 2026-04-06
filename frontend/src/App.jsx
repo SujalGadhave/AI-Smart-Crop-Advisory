@@ -323,6 +323,11 @@ function UploadPage({ token, setLastReport, lang, onAuthFailure }) {
           navigate('/login')
           return
         }
+        if (statusCode === 422) {
+          const errMsg = err?.response?.data?.message || 'Please upload a crop leaf image.'
+          setStatus(`⚠️ ${errMsg}`)
+          return
+        }
         setStatus('Unable to detect right now. Please retry.')
       }
     }
@@ -359,7 +364,9 @@ function UploadPage({ token, setLastReport, lang, onAuthFailure }) {
             />
           </div>
         </div>
-        {status && <p className="text-sm text-emerald-200">{status}</p>}
+        {status && (
+          <p className={`text-sm ${status.startsWith('⚠️') ? 'text-red-400' : 'text-emerald-200'}`}>{status}</p>
+        )}
         <button
           type="submit"
           className="px-4 py-3 bg-emerald-500 text-slate-900 font-semibold rounded-xl hover:bg-emerald-400"
@@ -375,13 +382,63 @@ function ResultPage({ lastReport, lang }) {
   if (!lastReport) {
     return <p className="text-slate-400">{t(lang, 'detectionFallback')}</p>
   }
+
+  const severityColor = {
+    low: 'bg-emerald-700 text-emerald-100',
+    medium: 'bg-yellow-600 text-yellow-100',
+    high: 'bg-red-700 text-red-100',
+  }[lastReport.severity?.toLowerCase()] || 'bg-slate-700 text-slate-200'
+
+  const diseaseLabel = (lastReport.diseaseName || 'Unknown').replace(/_/g, ' ')
+
   return (
-    <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl">
+    <div className="max-w-3xl mx-auto bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
       <p className="text-sm text-emerald-300 uppercase tracking-wide">{t(lang, 'result')}</p>
-      <h2 className="text-2xl font-semibold mt-2 capitalize">{lastReport.diseaseName}</h2>
-      <p className="text-slate-300 mt-2">Confidence: {(lastReport.confidence * 100).toFixed(1)}%</p>
-      <p className="text-slate-400 mt-2">{lastReport.treatment}</p>
-      <p className="text-slate-500 text-sm mt-3">Report #{lastReport.reportId}</p>
+
+      <div className="flex items-center gap-3 flex-wrap">
+        <h2 className="text-2xl font-semibold capitalize">{diseaseLabel}</h2>
+        {lastReport.severity && (
+          <span className={`text-xs font-bold uppercase px-2 py-1 rounded-full ${severityColor}`}>
+            {lastReport.severity} severity
+          </span>
+        )}
+        {lastReport.healthy && (
+          <span className="text-xs font-bold uppercase px-2 py-1 rounded-full bg-emerald-600 text-white">
+            Healthy
+          </span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <div className="bg-slate-800 rounded-lg p-3">
+          <p className="text-slate-400">Confidence</p>
+          <p className="text-white font-semibold">{(lastReport.confidence * 100).toFixed(1)}%</p>
+        </div>
+        {lastReport.affectedAreaPercent != null && (
+          <div className="bg-slate-800 rounded-lg p-3">
+            <p className="text-slate-400">Affected Area</p>
+            <p className="text-white font-semibold">{lastReport.affectedAreaPercent.toFixed(1)}%</p>
+          </div>
+        )}
+      </div>
+
+      {lastReport.symptoms && lastReport.symptoms.length > 0 && (
+        <div className="bg-slate-800 rounded-lg p-4">
+          <p className="text-sm font-semibold text-emerald-300 mb-2">Observed Symptoms</p>
+          <ul className="list-disc list-inside space-y-1 text-slate-300 text-sm">
+            {lastReport.symptoms.map((s) => (
+              <li key={s}>{s}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <div className="bg-slate-800 rounded-lg p-4">
+        <p className="text-sm font-semibold text-emerald-300 mb-1">Recommended Treatment</p>
+        <p className="text-slate-300 text-sm">{lastReport.treatment}</p>
+      </div>
+
+      <p className="text-slate-500 text-xs">Report #{lastReport.reportId}</p>
     </div>
   )
 }
