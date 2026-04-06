@@ -47,7 +47,8 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,
                             "/api/weather", "/api/weather/**",
                             "/api/market", "/api/market/**",
-                            "/api/advisory", "/api/advisory/**")
+                            "/api/advisory", "/api/advisory/**",
+                            "/api/crop/reports", "/api/crop/reports/**")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/crop/detect").authenticated()
                     .anyRequest().authenticated())

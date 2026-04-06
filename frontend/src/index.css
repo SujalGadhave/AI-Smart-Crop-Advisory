@@ -7,6 +7,7 @@ body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: #0f172a;
   color: #e2e8f0;
+  overflow-x: hidden;
 }
 
 a {
@@ -21,4 +22,13 @@ a {
 ::-webkit-scrollbar-thumb {
   background: #334155;
   border-radius: 12px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
