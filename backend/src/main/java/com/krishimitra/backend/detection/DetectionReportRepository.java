@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface DetectionReportRepository extends JpaRepository<DetectionReport, Long> {
 	List<DetectionReport> findTop50ByOrderByCreatedAtDesc();
+	List<DetectionReport> findTop50ByFarmerEmailOrderByCreatedAtDesc(String farmerEmail);
 }

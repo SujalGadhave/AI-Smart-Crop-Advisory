@@ -1,16 +1,74 @@
-# React + Vite
+# KrishiMitra Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + Vite frontend for the KrishiMitra demo app.
 
-Currently, two official plugins are available:
+## Tech stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19
+- Vite 8
+- React Router
+- Axios
+- Tailwind CSS
+- Vitest + Testing Library
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 20+
+- npm 10+
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+npm install
+```
+
+## Environment
+
+The frontend reads backend base URL from `VITE_API_BASE_URL`.
+
+- Default: `http://localhost:8080`
+
+Windows PowerShell example:
+
+```powershell
+$env:VITE_API_BASE_URL="http://localhost:8080"
+npm run dev -- --host
+```
+
+## Run locally
+
+```bash
+npm run dev -- --host
+```
+
+## Scripts
+
+- `npm run dev` - start development server
+- `npm run build` - production build
+- `npm run preview` - preview production build
+- `npm run lint` - run ESLint
+- `npm run test` - run Vitest in watch mode
+- `npm run test:run` - run Vitest once
+
+## Testing
+
+Current integration test covers login -> upload -> detect flow:
+
+- `src/App.integration.test.jsx`
+
+Run only this test:
+
+```bash
+npm run test:run -- src/App.integration.test.jsx
+```
+
+Run all frontend tests:
+
+```bash
+npm run test:run
+```
+
+## Notes
+
+- API calls are centralized in `src/services/api.js`.
+- This frontend expects backend endpoints under `/api/*`.

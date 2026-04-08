@@ -33,13 +33,15 @@ public class WeatherController {
             @SuppressWarnings("unchecked")
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
             if (response != null && response.containsKey("current_weather")) {
-                Map<String, Object> current = (Map<String, Object>) response.get("current_weather");
-                Object temp = current.get("temperature");
-                Object wind = current.get("windspeed");
-                Object code = current.get("weathercode");
-                if (temp instanceof Number) temperature = ((Number) temp).doubleValue();
-                if (wind instanceof Number) windSpeed = ((Number) wind).doubleValue();
-                condition = code != null ? code.toString() : condition;
+                Object currentWeather = response.get("current_weather");
+                if (currentWeather instanceof Map<?, ?> current) {
+                    Object temp = current.get("temperature");
+                    Object wind = current.get("windspeed");
+                    Object code = current.get("weathercode");
+                    if (temp instanceof Number) temperature = ((Number) temp).doubleValue();
+                    if (wind instanceof Number) windSpeed = ((Number) wind).doubleValue();
+                    condition = code != null ? code.toString() : condition;
+                }
             }
         } catch (Exception e) {
             log.warn("Weather fallback", e);

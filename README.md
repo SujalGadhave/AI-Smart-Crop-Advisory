@@ -20,7 +20,16 @@ A demo-friendly prototype of KrishiMitra with the original three-tier architectu
 cd backend
 mvn spring-boot:run
 ```
-By default this uses H2 in-memory. Set `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` to point at MySQL. AI service URL can be set via `AI_SERVICE_URL` (defaults to `http://localhost:8000/predict`).
+This backend targets Java 17 and is configured for MySQL by default. Set `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and `SPRING_DATASOURCE_PASSWORD` for your local database. AI service URL can be set via `AI_SERVICE_URL` (defaults to `http://localhost:8000/predict`).
+
+If `mvn` is not available in PATH on Windows, run Maven with full path:
+
+```powershell
+Set-Location backend
+& "C:\Users\admin\.maven\maven-3.9.14\bin\mvn.cmd" spring-boot:run
+```
+
+For backend test and build commands, see `backend/README.md`.
 
 ### AI service
 ```bash
@@ -37,6 +46,34 @@ npm install
 npm run dev -- --host
 ```
 Set `VITE_API_BASE_URL` to point to the backend (default `http://localhost:8080`).
+
+## Testing
+
+### Backend tests
+```bash
+cd backend
+mvn test
+```
+
+Windows PowerShell with explicit Maven path:
+
+```powershell
+Set-Location backend
+& "C:\Users\admin\.maven\maven-3.9.14\bin\mvn.cmd" test
+```
+
+### Frontend tests
+```bash
+cd frontend
+npm run test:run
+```
+
+Run only the integration test:
+
+```bash
+cd frontend
+npm run test:run -- src/App.integration.test.jsx
+```
 
 ## Docker Compose demo
 ```bash

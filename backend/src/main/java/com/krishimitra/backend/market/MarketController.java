@@ -2,14 +2,21 @@ package com.krishimitra.backend.market;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -31,12 +38,15 @@ public class MarketController {
         private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
         private final RestTemplate restTemplate;
+        private final MarketPriceAlertRepository alertRepository;
 
         @Value("${market.api.base-url:https://vegetablemarketprice.com}")
         private String marketApiBaseUrl;
 
-        public MarketController(RestTemplate restTemplate) {
+        public MarketController(RestTemplate restTemplate,
+                                MarketPriceAlertRepository alertRepository) {
                 this.restTemplate = restTemplate;
+                this.alertRepository = alertRepository;
         }
 
     private final Map<String, MarketResponse> seeds = Map.of(
@@ -90,18 +100,77 @@ public class MarketController {
                 return seeds.getOrDefault(normalizedCrop, seeds.get("tomato"));
         }
 
+        @PostMapping("/alerts")
+        public MarketAlertResponse createAlert(@RequestBody MarketAlertRequest request,
+                                               Authentication authentication) {
+                String farmerEmail = authentication != null ? authentication.getName() : null;
+                if (farmerEmail == null || farmerEmail.isBlank()) {
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+                }
+
+                if (request.getTargetPrice() == null || request.getTargetPrice() <= 0) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "targetPrice must be greater than 0");
+                }
+
+                String normalizedCrop = normalizeCrop(request.getCropType());
+                String normalizedCity = normalizeMarket(request.getCity());
+                String normalizedDirection = normalizeDirection(request.getDirection());
+
+                MarketPriceAlert created = alertRepository.save(new MarketPriceAlert(
+                        farmerEmail,
+                        normalizedCrop,
+                        normalizedCity,
+                        request.getTargetPrice(),
+                        normalizedDirection
+                ));
+
+                return toAlertResponse(created);
+        }
+
+        @GetMapping("/alerts")
+        public List<MarketAlertResponse> getAlerts(Authentication authentication,
+                                                   @RequestParam(value = "limit", defaultValue = "20") int limit) {
+                String farmerEmail = authentication != null ? authentication.getName() : null;
+                if (farmerEmail == null || farmerEmail.isBlank()) {
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+                }
+
+                int safeLimit = Math.max(1, Math.min(50, limit));
+                return alertRepository.findTop50ByFarmerEmailOrderByCreatedAtDesc(farmerEmail).stream()
+                        .limit(safeLimit)
+                        .map(this::toAlertResponse)
+                        .toList();
+        }
+
+        @DeleteMapping("/alerts/{alertId}")
+        public void deleteAlert(@PathVariable Long alertId,
+                                Authentication authentication) {
+                String farmerEmail = authentication != null ? authentication.getName() : null;
+                if (farmerEmail == null || farmerEmail.isBlank()) {
+                        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+                }
+
+                MarketPriceAlert alert = alertRepository.findByIdAndFarmerEmail(alertId, farmerEmail)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Alert not found"));
+                alertRepository.delete(alert);
+        }
+
         private LivePriceData fetchLivePriceAndTrend(String marketSlug, String vegId) {
                 String today = LocalDate.now(ZoneId.of("Asia/Kolkata")).format(DATE_FORMATTER);
+                String baseUrl = (marketApiBaseUrl == null || marketApiBaseUrl.isBlank())
+                                ? "https://vegetablemarketprice.com"
+                                : marketApiBaseUrl;
+                String safeBaseUrl = Objects.requireNonNull(baseUrl);
 
                 String dayWiseUrl = UriComponentsBuilder
-                                .fromHttpUrl(marketApiBaseUrl)
+                                .fromHttpUrl(safeBaseUrl)
                                 .pathSegment("api", "dataapi", "market", marketSlug, "daywisedata")
                                 .queryParam("date", today)
                                 .build(true)
                                 .toUriString();
 
                 String trendUrl = UriComponentsBuilder
-                                .fromHttpUrl(marketApiBaseUrl)
+                                .fromHttpUrl(safeBaseUrl)
                                 .pathSegment("api", "dataapi", "market", marketSlug, "latestchartdata")
                                 .queryParam("days", 7)
                                 .queryParam("vegIds", vegId)
@@ -193,6 +262,41 @@ public class MarketController {
                         return "pune";
                 }
                 return city.trim().toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "");
+        }
+
+        private String normalizeDirection(String direction) {
+                if (direction == null || direction.isBlank()) {
+                        return "ABOVE";
+                }
+                String normalized = direction.trim().toUpperCase(Locale.ROOT);
+                return switch (normalized) {
+                        case "ABOVE", "BELOW" -> normalized;
+                        default -> "ABOVE";
+                };
+        }
+
+        private MarketAlertResponse toAlertResponse(MarketPriceAlert alert) {
+                MarketResponse market = getMarket(alert.getCropType(), alert.getCity());
+                double currentPrice = market.getCurrentPrice();
+                boolean triggered = "ABOVE".equalsIgnoreCase(alert.getDirection())
+                        ? currentPrice >= alert.getTargetPrice()
+                        : currentPrice <= alert.getTargetPrice();
+
+                String message = triggered
+                        ? String.format("Price %.0f reached target %.0f (%s)", currentPrice, alert.getTargetPrice(), alert.getDirection())
+                        : String.format("Current %.0f, waiting for %.0f (%s)", currentPrice, alert.getTargetPrice(), alert.getDirection());
+
+                return new MarketAlertResponse(
+                        alert.getId(),
+                        alert.getCropType(),
+                        alert.getCity(),
+                        alert.getTargetPrice(),
+                        alert.getDirection(),
+                        currentPrice,
+                        triggered,
+                        message,
+                        alert.getCreatedAt()
+                );
         }
 
         private static class LivePriceData {

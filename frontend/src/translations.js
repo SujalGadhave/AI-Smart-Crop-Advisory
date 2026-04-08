@@ -14,8 +14,17 @@ export const translations = {
     result: "Result",
     advisory: "Advisory",
     market: "Market Prices",
+    altBackgroundImage: "Background image",
+    altDashboardHeroImage: "Farm dashboard hero image",
+    altWeatherCardImage: "Weather card image",
     chooseLanguage: "Language",
+    languageEnglish: "EN",
+    languageHindi: "Hindi",
+    languageMarathi: "Marathi",
     chooseCrop: "Choose crop",
+    cropTomato: "Tomato",
+    cropPotato: "Potato",
+    cropCorn: "Corn",
     uploadPrompt: "Upload a clear leaf photo (tomato, potato, or corn)",
     submit: "Submit",
     lastDetection: "Latest detection",
@@ -23,7 +32,11 @@ export const translations = {
     advisoryBlurb: "Rule-based recommendations seeded for demo.",
     marketBlurb: "Seeded mandi prices with small trend chart.",
     weather: "Weather Forecast",
+    defaultCityName: "Pune",
+    weatherFallbackAdvice: "Stay hydrated",
     tokenMissing: "Please login to continue.",
+    authFailed: "Unable to authenticate. Check details and try again.",
+    pleaseWait: "Please wait...",
     slogan:"Empowering farmers with AI",
     protect:"Protect Your Investment and Increase Yields",
     scan:"Instantly scan, access expert plans, and track live prices",
@@ -42,11 +55,31 @@ export const translations = {
     photoChecklistGoodLighting: "Use bright, natural lighting",
     photoChecklistCloseUp: "Take a close-up from top view",
     photoChecklistAvoidBlur: "Avoid blur and shadows",
+    uploadChooseImage: "Please choose a leaf image.",
+    uploadInvalidImage: "Please upload a valid image file.",
+    uploadImageTooLarge: "Image is too large. Please upload an image under 5MB.",
+    uploadSending: "Sending to AI...",
+    uploadCropLeafRequired: "Please upload a crop leaf image.",
+    uploadDetectFailed: "Unable to detect right now. Please retry.",
+    advisoryLoading: "Loading advisory...",
+    advisoryLoadFailed: "Unable to load advisory right now.",
+    marketLoadFailed: "Unable to load market data right now.",
     dashboardSummary: "View crop risk, confidence, and weather in one place.",
     dashboardMetricDisease: "Detected Issue",
     dashboardMetricConfidence: "Confidence",
+    labelConfidenceLower: "confidence",
+    labelTreatment: "Treatment",
+    labelSeverity: "severity",
+    labelHealthy: "Healthy",
+    labelAffectedArea: "Affected Area",
+    labelObservedSymptoms: "Observed Symptoms",
+    labelRecommendedTreatment: "Recommended Treatment",
     dashboardMetricTemp: "Temperature",
     dashboardMetricWind: "Wind",
+    weatherWindLabel: "wind",
+    loadingWeather: "Loading weather...",
+    uploadImageLabel: "Image",
+    unknownDisease: "Unknown",
     noDetectionShort: "No detection yet",
     quickTipsTitle: "Quick Tips",
     quickTipOne: "Upload a single leaf with plain background for better diagnosis.",
@@ -59,7 +92,114 @@ export const translations = {
     advisoryChecklistOne: "Confirm disease symptoms with a clear close-up leaf photo.",
     advisoryChecklistTwo: "Spray during calm weather and avoid peak noon heat.",
     advisoryChecklistThree: "Recheck the same field area after 2-3 days.",
+    adviceFertilizer: "Fertilizer",
+    adviceIrrigation: "Irrigation",
+    advicePest: "Pest",
+    adviceWeather: "Weather",
+    adviceDiseaseSpecific: "Disease-Specific",
     uploadNewLeaf: "Upload New Leaf Image"
+    ,timeline: "Timeline"
+    ,timelineDetectedAt: "Detected At"
+    ,timelineNextFollowUp: "Next Follow-up"
+    ,timelineReminders: "Reminder Schedule"
+    ,timelineStatus: "Follow-up Status"
+    ,timelineNotes: "Follow-up Notes"
+    ,timelineSave: "Save Follow-up"
+    ,timelineSaving: "Saving..."
+    ,timelineSaved: "Follow-up updated successfully."
+    ,timelineLoadFailed: "Unable to load timeline right now."
+    ,timelineSaveFailed: "Unable to save follow-up right now."
+    ,timelineLoginRequired: "Please login to view your timeline."
+    ,timelineSessionExpired: "Session expired. Please login again."
+    ,timelineEmpty: "No timeline records yet. Run a detection first."
+    ,timelineLoading: "Loading timeline..."
+    ,timelineStatusPending: "Pending"
+    ,timelineStatusInProgress: "In Progress"
+    ,timelineStatusCompleted: "Completed"
+    ,timelineStatusNeedsAttention: "Needs Attention"
+    ,riskAlertsTitle: "Risk Alerts"
+    ,riskAlertsClear: "No active alerts right now. Keep monitoring your crop timeline."
+    ,riskAlertLevelHigh: "HIGH"
+    ,riskAlertLevelMedium: "MEDIUM"
+    ,riskAlertHighTitle: "Immediate crop attention needed"
+    ,riskAlertMediumTitle: "Follow-up check required"
+    ,riskAlertHighMessage: "Prioritize this case and update follow-up after field action."
+    ,riskAlertMediumMessage: "Review treatment progress and record a follow-up update soon."
+    ,riskAlertCaseLabel: "Case"
+    ,riskAlertDetectedOn: "Detected on"
+    ,marketAlertsTitle: "Price Alerts"
+    ,marketAlertsTargetPrice: "Target Price"
+    ,marketAlertsDirection: "Direction"
+    ,marketAlertsCreate: "Create Alert"
+    ,marketAlertsEmpty: "No price alerts yet."
+    ,marketAlertsTriggered: "TRIGGERED"
+    ,marketAlertsWatching: "WATCHING"
+    ,marketAlertsDelete: "Delete"
+    ,marketAlertSaved: "Price alert created successfully."
+    ,marketAlertSaveFailed: "Unable to save price alert right now."
+    ,marketAlertInvalidPrice: "Enter a valid target price above 0."
+    ,marketDirectionAbove: "Above"
+    ,marketDirectionBelow: "Below"
+    ,marketAlertMessageTriggered: "Price target reached."
+    ,marketAlertMessageWatching: "Tracking until target is reached."
+    ,marketAlertCreatedOn: "Created on"
+    ,marketMandiLabel: "mandi"
+    ,triggeredPriceAlertsTitle: "Triggered Price Alerts"
+    ,triggeredPriceAlertsClear: "No triggered price alerts right now."
+    ,triggeredPriceAlertsViewAll: "View all in Market"
+    ,notificationsTitle: "Alert Inbox"
+    ,notificationsUnread: "unread"
+    ,notificationsClear: "No new notifications right now."
+    ,notificationsMarkRead: "Mark read"
+    ,notificationsMarkAllRead: "Mark all as read"
+    ,notificationsCreatedOn: "Created on"
+    ,notificationsSettingsNav: "Alerts"
+    ,notificationsSettingsTitle: "Notification Settings"
+    ,notificationsSettingsSubtitle: "Choose where you want to receive proactive alerts."
+    ,notificationsSettingsLoadFailed: "Unable to load notification settings right now."
+    ,notificationsSettingsSaved: "Notification settings updated successfully."
+    ,notificationsSettingsSave: "Save Settings"
+    ,notificationsSettingsSaving: "Saving..."
+    ,notificationsSettingsUpdatedAt: "Last updated"
+    ,notificationsSettingsInApp: "In-app alerts"
+    ,notificationsSettingsSms: "SMS alerts"
+    ,notificationsSettingsWhatsapp: "WhatsApp alerts"
+    ,notificationsSettingsPush: "Push alerts"
+    ,notificationsSettingsSmsNumber: "SMS number (e.g. +91...)"
+    ,notificationsSettingsWhatsappNumber: "WhatsApp number (e.g. +91...)"
+    ,notificationsSettingsPushToken: "Push token"
+    ,notificationsSettingsDeliveryTitle: "Delivery History"
+    ,notificationsSettingsDeliveryEmpty: "No delivery attempts yet."
+    ,notificationsSettingsSavedEndpoints: "Saved Endpoints (masked)"
+    ,notificationsSettingsRefreshNow: "Refresh"
+    ,notificationsSettingsLastRefresh: "Last refresh"
+    ,notificationsSettingsAutoRefresh: "auto-refresh every 20s"
+    ,notificationsSettingsProviderStatus: "Provider status"
+    ,notificationsSettingsProviderRef: "Provider reference"
+    ,notificationsSettingsProviderMessage: "Provider message"
+    ,notificationsSettingsPolicyTitle: "Provider Policy"
+    ,notificationsSettingsPolicyEmpty: "No provider policy data available."
+    ,notificationsSettingsPolicyEnabled: "Enabled"
+    ,notificationsSettingsPolicyDisabled: "Disabled"
+    ,notificationsSettingsConfiguredAttempts: "Configured attempts"
+    ,notificationsSettingsEffectiveAttempts: "Effective attempts"
+    ,notificationsSettingsConfiguredBackoff: "Configured backoff"
+    ,notificationsSettingsEffectiveBackoff: "Effective backoff"
+    ,notificationsSettingsRetry: "Retry now"
+    ,notificationsSettingsRetrying: "Retrying..."
+    ,notificationsSettingsRetrySuccess: "Delivery retry submitted."
+    ,notificationsSettingsRetryFailed: "Unable to retry this delivery attempt."
+    ,notificationsSettingsRetryNew: "New retry"
+    ,notificationsSettingsRetryAttempt: "Retry attempt"
+    ,notificationsSettingsDiagnosticsTitle: "Diagnostics"
+    ,notificationsSettingsDiagnosticsEmpty: "No diagnostics available yet."
+    ,notificationsSettingsDiagnosticsWindow: "Window (days)"
+    ,notificationsSettingsDiagnosticsRetryTotal: "Total retries"
+    ,notificationsSettingsDiagnosticsRetryDelivered: "Retry delivered"
+    ,notificationsSettingsDiagnosticsRetryFailed: "Retry failed"
+    ,notificationsSettingsDiagnosticsRetrySuccessRate: "Retry success rate"
+    ,notificationsSettingsDiagnosticsAttempts: "Attempts"
+    ,notificationsSettingsDiagnosticsFailures: "Failures"
   },
   hi: {
     title: "कृषि मित्र",
@@ -76,8 +216,17 @@ export const translations = {
     result: "परिणाम",
     advisory: "सलाह",
     market: "मंडी भाव",
+    altBackgroundImage: "पृष्ठभूमि छवि",
+    altDashboardHeroImage: "फार्म डैशबोर्ड मुख्य छवि",
+    altWeatherCardImage: "मौसम कार्ड छवि",
     chooseLanguage: "भाषा",
+    languageEnglish: "EN",
+    languageHindi: "हिंदी",
+    languageMarathi: "मराठी",
     chooseCrop: "फसल चुनें",
+    cropTomato: "टमाटर",
+    cropPotato: "आलू",
+    cropCorn: "मक्का",
     uploadPrompt: "साफ पत्ते का फोटो अपलोड करें (टमाटर, आलू, या मक्का)",
     submit: "भेजें",
     lastDetection: "हालिया पहचान",
@@ -85,7 +234,11 @@ export const translations = {
     advisoryBlurb: "नियम-आधारित सलाह डेमो के लिए।",
     marketBlurb: "बीजित मंडी डेटा और ट्रेंड।",
     weather: "मौसम",
+    defaultCityName: "पुणे",
+    weatherFallbackAdvice: "पर्याप्त पानी पिएं",
     tokenMissing: "कृपया जारी रखने के लिए लॉगिन करें।",
+    authFailed: "प्रमाणीकरण नहीं हो सका। विवरण जांचें और फिर प्रयास करें।",
+    pleaseWait: "कृपया प्रतीक्षा करें...",
     slogan:"किसानों को एआई के साथ सशक्त बनाना",
     protect:"अपनी फसल की सुरक्षा करें और उत्पादन बढ़ाएं",
     scan:"तुरंत स्कैन करें, विशेषज्ञ योजनाओं तक पहुंचें, और लाइव कीमतों को ट्रैक करें",
@@ -104,11 +257,31 @@ export const translations = {
     photoChecklistGoodLighting: "अच्छी प्राकृतिक रोशनी का उपयोग करें",
     photoChecklistCloseUp: "ऊपर से क्लोज-अप फोटो लें",
     photoChecklistAvoidBlur: "धुंधलापन और छाया से बचें",
+    uploadChooseImage: "कृपया पत्ते की एक छवि चुनें।",
+    uploadInvalidImage: "कृपया मान्य छवि फ़ाइल अपलोड करें।",
+    uploadImageTooLarge: "छवि बहुत बड़ी है। कृपया 5MB से कम की छवि अपलोड करें।",
+    uploadSending: "AI को भेजा जा रहा है...",
+    uploadCropLeafRequired: "कृपया फसल के पत्ते की छवि अपलोड करें।",
+    uploadDetectFailed: "अभी पहचान नहीं हो सकी। कृपया फिर प्रयास करें।",
+    advisoryLoading: "सलाह लोड हो रही है...",
+    advisoryLoadFailed: "अभी सलाह लोड नहीं हो सकी।",
+    marketLoadFailed: "अभी बाजार डेटा लोड नहीं हो सका।",
     dashboardSummary: "एक ही स्थान पर फसल जोखिम, भरोसा और मौसम देखें।",
     dashboardMetricDisease: "पहचानी गई समस्या",
     dashboardMetricConfidence: "भरोसा",
+    labelConfidenceLower: "भरोसा",
+    labelTreatment: "उपचार",
+    labelSeverity: "गंभीरता",
+    labelHealthy: "स्वस्थ",
+    labelAffectedArea: "प्रभावित क्षेत्र",
+    labelObservedSymptoms: "देखे गए लक्षण",
+    labelRecommendedTreatment: "अनुशंसित उपचार",
     dashboardMetricTemp: "तापमान",
     dashboardMetricWind: "हवा",
+    weatherWindLabel: "हवा",
+    loadingWeather: "मौसम लोड हो रहा है...",
+    uploadImageLabel: "छवि",
+    unknownDisease: "अज्ञात",
     noDetectionShort: "अभी तक पहचान नहीं",
     quickTipsTitle: "त्वरित सुझाव",
     quickTipOne: "बेहतर पहचान के लिए सादे बैकग्राउंड में एक पत्ते की फोटो अपलोड करें।",
@@ -121,7 +294,103 @@ export const translations = {
     advisoryChecklistOne: "स्पष्ट क्लोज-अप पत्ते की फोटो से लक्षण की पुष्टि करें।",
     advisoryChecklistTwo: "शांत मौसम में छिड़काव करें और दोपहर की तेज गर्मी से बचें।",
     advisoryChecklistThree: "2-3 दिनों बाद उसी खेत क्षेत्र को फिर जांचें।",
-    uploadNewLeaf: "नया पत्ता अपलोड करें"
+    adviceFertilizer: "उर्वरक",
+    adviceIrrigation: "सिंचाई",
+    advicePest: "कीट प्रबंधन",
+    adviceWeather: "मौसम",
+    adviceDiseaseSpecific: "रोग-विशिष्ट",
+    uploadNewLeaf: "नया पत्ता अपलोड करें",
+    timeline: "टाइमलाइन",
+    timelineDetectedAt: "पहचान का समय",
+    timelineNextFollowUp: "अगला फॉलो-अप",
+    timelineReminders: "रिमाइंडर शेड्यूल",
+    timelineStatus: "फॉलो-अप स्थिति",
+    timelineNotes: "फॉलो-अप नोट्स",
+    timelineSave: "फॉलो-अप सहेजें",
+    timelineSaving: "सहेजा जा रहा है...",
+    timelineSaved: "फॉलो-अप सफलतापूर्वक अपडेट हुआ।",
+    timelineLoadFailed: "अभी टाइमलाइन लोड नहीं हो सकी।",
+    timelineSaveFailed: "अभी फॉलो-अप सहेजा नहीं जा सका।",
+    timelineLoginRequired: "अपनी टाइमलाइन देखने के लिए कृपया लॉगिन करें।",
+    timelineSessionExpired: "सत्र समाप्त हो गया है। कृपया फिर लॉगिन करें।",
+    timelineEmpty: "अभी कोई टाइमलाइन रिकॉर्ड नहीं है। पहले एक पहचान चलाएं।",
+    riskAlertsTitle: "जोखिम अलर्ट",
+    riskAlertsClear: "अभी कोई सक्रिय अलर्ट नहीं है। अपनी फसल टाइमलाइन की निगरानी जारी रखें।",
+    marketAlertsTitle: "मूल्य अलर्ट",
+    marketAlertsTargetPrice: "लक्षित कीमत",
+    marketAlertsDirection: "दिशा",
+    marketAlertsCreate: "अलर्ट बनाएं",
+    marketAlertsEmpty: "अभी कोई मूल्य अलर्ट नहीं है।",
+    marketAlertsTriggered: "ट्रिगर हुआ",
+    marketAlertsWatching: "निगरानी में",
+    marketAlertsDelete: "हटाएं",
+    marketAlertSaved: "मूल्य अलर्ट सफलतापूर्वक बनाया गया।",
+    marketAlertSaveFailed: "अभी मूल्य अलर्ट सहेजा नहीं जा सका।",
+    marketAlertInvalidPrice: "0 से अधिक मान्य लक्षित कीमत दर्ज करें।",
+    marketDirectionAbove: "ऊपर",
+    marketDirectionBelow: "नीचे",
+    marketAlertMessageTriggered: "मूल्य लक्ष्य पूरा हो गया है।",
+    marketAlertMessageWatching: "लक्ष्य पूरा होने तक निगरानी जारी है।",
+    marketAlertCreatedOn: "बनाया गया",
+    riskAlertLevelHigh: "उच्च",
+    riskAlertLevelMedium: "मध्यम",
+    riskAlertHighTitle: "फसल पर तुरंत ध्यान जरूरी",
+    riskAlertMediumTitle: "फॉलो-अप जांच आवश्यक",
+    riskAlertHighMessage: "इस केस को प्राथमिकता दें और खेत में कार्रवाई के बाद फॉलो-अप अपडेट करें।",
+    riskAlertMediumMessage: "उपचार प्रगति की समीक्षा करें और जल्द फॉलो-अप अपडेट दर्ज करें।",
+    riskAlertCaseLabel: "मामला",
+    riskAlertDetectedOn: "पहचान की तारीख",
+    triggeredPriceAlertsTitle: "ट्रिगर हुए मूल्य अलर्ट",
+    triggeredPriceAlertsClear: "अभी कोई ट्रिगर मूल्य अलर्ट नहीं है।",
+    triggeredPriceAlertsViewAll: "मार्केट में सभी देखें",
+    notificationsTitle: "अलर्ट इनबॉक्स",
+    notificationsUnread: "अपठित",
+    notificationsClear: "अभी कोई नई सूचना नहीं है।",
+    notificationsMarkRead: "पढ़ा हुआ चिह्नित करें",
+    notificationsMarkAllRead: "सभी को पढ़ा हुआ चिह्नित करें",
+    notificationsCreatedOn: "बनाया गया",
+    notificationsSettingsNav: "अलर्ट",
+    notificationsSettingsTitle: "सूचना सेटिंग्स",
+    notificationsSettingsSubtitle: "प्रोएक्टिव अलर्ट कहां प्राप्त करने हैं, यह चुनें।",
+    notificationsSettingsLoadFailed: "अभी सूचना सेटिंग्स लोड नहीं हो सकीं।",
+    notificationsSettingsSaved: "सूचना सेटिंग्स सफलतापूर्वक अपडेट हुईं।",
+    notificationsSettingsSave: "सेटिंग्स सहेजें",
+    notificationsSettingsSaving: "सहेजा जा रहा है...",
+    notificationsSettingsUpdatedAt: "अंतिम अपडेट",
+    notificationsSettingsInApp: "इन-ऐप अलर्ट",
+    notificationsSettingsSms: "SMS अलर्ट",
+    notificationsSettingsWhatsapp: "व्हाट्सऐप अलर्ट",
+    notificationsSettingsPush: "पुश अलर्ट",
+    notificationsSettingsSmsNumber: "SMS नंबर (उदा. +91...)",
+    notificationsSettingsWhatsappNumber: "व्हाट्सऐप नंबर (उदा. +91...)",
+    notificationsSettingsPushToken: "पुश टोकन",
+    notificationsSettingsDeliveryTitle: "डिलीवरी इतिहास",
+    notificationsSettingsDeliveryEmpty: "अभी कोई डिलीवरी प्रयास नहीं है।",
+    notificationsSettingsSavedEndpoints: "सहेजे गए एंडपॉइंट (मास्क्ड)",
+    notificationsSettingsRefreshNow: "रीफ्रेश",
+    notificationsSettingsLastRefresh: "अंतिम रीफ्रेश",
+    notificationsSettingsAutoRefresh: "हर 20 सेकंड में ऑटो-रीफ्रेश",
+    notificationsSettingsProviderStatus: "प्रोवाइडर स्थिति",
+    notificationsSettingsProviderRef: "प्रोवाइडर संदर्भ",
+    notificationsSettingsProviderMessage: "प्रोवाइडर संदेश",
+    notificationsSettingsPolicyTitle: "प्रोवाइडर नीति",
+    notificationsSettingsPolicyEmpty: "कोई प्रोवाइडर नीति डेटा उपलब्ध नहीं है।",
+    notificationsSettingsPolicyEnabled: "सक्रिय",
+    notificationsSettingsPolicyDisabled: "निष्क्रिय",
+    notificationsSettingsConfiguredAttempts: "कॉन्फ़िगर प्रयास",
+    notificationsSettingsEffectiveAttempts: "प्रभावी प्रयास",
+    notificationsSettingsConfiguredBackoff: "कॉन्फ़िगर बैकऑफ़",
+    notificationsSettingsEffectiveBackoff: "प्रभावी बैकऑफ़",
+    notificationsSettingsRetry: "अभी पुनः प्रयास करें",
+    notificationsSettingsRetrying: "पुनः प्रयास हो रहा है...",
+    notificationsSettingsRetrySuccess: "डिलीवरी पुनः प्रयास भेज दिया गया है।",
+    notificationsSettingsRetryFailed: "इस डिलीवरी प्रयास का पुनः प्रयास नहीं हो सका।",
+    timelineLoading: "टाइमलाइन लोड हो रही है...",
+    timelineStatusPending: "लंबित",
+    timelineStatusInProgress: "प्रगति में",
+    timelineStatusCompleted: "पूर्ण",
+    timelineStatusNeedsAttention: "ध्यान आवश्यक",
+    marketMandiLabel: "मंडी"
 
   },
   mr: {
@@ -139,8 +408,17 @@ export const translations = {
     result: "निकाल",
     advisory: "सल्ला",
     market: "बाजारभाव",
+    altBackgroundImage: "पार्श्वभूमी प्रतिमा",
+    altDashboardHeroImage: "फार्म डॅशबोर्ड मुख्य प्रतिमा",
+    altWeatherCardImage: "हवामान कार्ड प्रतिमा",
     chooseLanguage: "भाषा",
+    languageEnglish: "EN",
+    languageHindi: "हिंदी",
+    languageMarathi: "मराठी",
     chooseCrop: "पिक निवडा",
+    cropTomato: "टोमॅटो",
+    cropPotato: "बटाटा",
+    cropCorn: "मका",
     uploadPrompt: "स्वच्छ पानाचा फोटो अपलोड करा (टोमॅटो, बटाटा किंवा मका)",
     submit: "सबमिट",
     lastDetection: "शेवटची तपासणी",
@@ -148,7 +426,11 @@ export const translations = {
     advisoryBlurb: "नियमाधारित सल्ला (डेमो).",
     marketBlurb: "बीजित मंडी दर आणि ट्रेंड.",
     weather: "हवामान",
+    defaultCityName: "पुणे",
+    weatherFallbackAdvice: "पुरेसे पाणी प्या",
     tokenMissing: "पुढे जाण्यासाठी कृपया लॉगिन करा.",
+    authFailed: "प्रमाणीकरण करता आले नाही. तपशील तपासा आणि पुन्हा प्रयत्न करा.",
+    pleaseWait: "कृपया प्रतीक्षा करा...",
     slogan:"किसानांना एआई के साथ सशक्त बनाना",
     protect:"आपल्या गुंतवणुकीचे संरक्षण करा आणि उत्पादन वाढवा",
     scan:"तुरंत स्कॅन करा, तज्ञ योजना मिळवा, आणि लाइव किमती ट्रॅक करा",
@@ -167,11 +449,31 @@ export const translations = {
     photoChecklistGoodLighting: "चांगला नैसर्गिक प्रकाश वापरा",
     photoChecklistCloseUp: "वरून क्लोज-अप फोटो घ्या",
     photoChecklistAvoidBlur: "धूसरपणा आणि सावल्या टाळा",
+    uploadChooseImage: "कृपया पानाची प्रतिमा निवडा.",
+    uploadInvalidImage: "कृपया वैध प्रतिमा फाइल अपलोड करा.",
+    uploadImageTooLarge: "प्रतिमा खूप मोठी आहे. कृपया 5MB पेक्षा कमी प्रतिमा अपलोड करा.",
+    uploadSending: "AI कडे पाठवत आहे...",
+    uploadCropLeafRequired: "कृपया पिकाच्या पानाची प्रतिमा अपलोड करा.",
+    uploadDetectFailed: "सध्या निदान करता आले नाही. कृपया पुन्हा प्रयत्न करा.",
+    advisoryLoading: "सल्ला लोड होत आहे...",
+    advisoryLoadFailed: "सध्या सल्ला लोड करता आला नाही.",
+    marketLoadFailed: "सध्या बाजार डेटा लोड करता आला नाही.",
     dashboardSummary: "पीक जोखीम, विश्वास पातळी आणि हवामान एकाच ठिकाणी पाहा.",
     dashboardMetricDisease: "ओळखलेली समस्या",
     dashboardMetricConfidence: "विश्वास",
+    labelConfidenceLower: "विश्वास",
+    labelTreatment: "उपचार",
+    labelSeverity: "तीव्रता",
+    labelHealthy: "निरोगी",
+    labelAffectedArea: "प्रभावित क्षेत्र",
+    labelObservedSymptoms: "आढळलेली लक्षणे",
+    labelRecommendedTreatment: "शिफारस केलेला उपचार",
     dashboardMetricTemp: "तापमान",
     dashboardMetricWind: "वारा",
+    weatherWindLabel: "वारा",
+    loadingWeather: "हवामान लोड होत आहे...",
+    uploadImageLabel: "प्रतिमा",
+    unknownDisease: "अज्ञात",
     noDetectionShort: "अद्याप निदान नाही",
     quickTipsTitle: "त्वरित सूचना",
     quickTipOne: "चांगल्या निदानासाठी साध्या पार्श्वभूमीवर एका पानाचा फोटो अपलोड करा.",
@@ -184,7 +486,103 @@ export const translations = {
     advisoryChecklistOne: "स्पष्ट क्लोज-अप फोटोने लक्षणांची खात्री करा.",
     advisoryChecklistTwo: "शांत हवामानात फवारणी करा आणि दुपारची तीव्र उष्णता टाळा.",
     advisoryChecklistThree: "2-3 दिवसांनी त्याच शेतभागाची पुन्हा तपासणी करा.",
-    uploadNewLeaf: "नवीन पान अपलोड करा"
+    adviceFertilizer: "खत",
+    adviceIrrigation: "सिंचन",
+    advicePest: "कीड व्यवस्थापन",
+    adviceWeather: "हवामान",
+    adviceDiseaseSpecific: "रोग-विशिष्ट",
+    uploadNewLeaf: "नवीन पान अपलोड करा",
+    timeline: "टाइमलाइन",
+    timelineDetectedAt: "ओळख वेळ",
+    timelineNextFollowUp: "पुढील फॉलो-अप",
+    timelineReminders: "रिमाइंडर वेळापत्रक",
+    timelineStatus: "फॉलो-अप स्थिती",
+    timelineNotes: "फॉलो-अप नोंदी",
+    timelineSave: "फॉलो-अप जतन करा",
+    timelineSaving: "जतन करत आहे...",
+    timelineSaved: "फॉलो-अप यशस्वीरित्या अद्यतनित झाला.",
+    timelineLoadFailed: "सध्या टाइमलाइन लोड करता आली नाही.",
+    timelineSaveFailed: "सध्या फॉलो-अप जतन करता आला नाही.",
+    timelineLoginRequired: "तुमची टाइमलाइन पाहण्यासाठी कृपया लॉगिन करा.",
+    timelineSessionExpired: "सत्र कालबाह्य झाले आहे. कृपया पुन्हा लॉगिन करा.",
+    timelineEmpty: "अद्याप कोणतीही टाइमलाइन नोंद नाही. आधी निदान चालवा.",
+    riskAlertsTitle: "जोखीम अलर्ट",
+    riskAlertsClear: "सध्या कोणतेही सक्रिय अलर्ट नाहीत. तुमच्या पिकाच्या टाइमलाइनवर लक्ष ठेवा.",
+    marketAlertsTitle: "किंमत अलर्ट",
+    marketAlertsTargetPrice: "लक्ष्य किंमत",
+    marketAlertsDirection: "दिशा",
+    marketAlertsCreate: "अलर्ट तयार करा",
+    marketAlertsEmpty: "सध्या कोणतेही किंमत अलर्ट नाहीत.",
+    marketAlertsTriggered: "ट्रिगर झाले",
+    marketAlertsWatching: "निगराणीमध्ये",
+    marketAlertsDelete: "काढा",
+    marketAlertSaved: "किंमत अलर्ट यशस्वीरित्या तयार झाला.",
+    marketAlertSaveFailed: "सध्या किंमत अलर्ट जतन करता आला नाही.",
+    marketAlertInvalidPrice: "0 पेक्षा जास्त वैध लक्ष्य किंमत टाका.",
+    marketDirectionAbove: "वर",
+    marketDirectionBelow: "खाली",
+    marketAlertMessageTriggered: "किंमत लक्ष्य गाठले आहे.",
+    marketAlertMessageWatching: "लक्ष्य गाठेपर्यंत निरीक्षण सुरू आहे.",
+    marketAlertCreatedOn: "तयार दिनांक",
+    riskAlertLevelHigh: "उच्च",
+    riskAlertLevelMedium: "मध्यम",
+    riskAlertHighTitle: "पिकासाठी तातडीचे लक्ष आवश्यक",
+    riskAlertMediumTitle: "फॉलो-अप तपासणी आवश्यक",
+    riskAlertHighMessage: "या प्रकरणाला प्राधान्य द्या आणि शेतातील कारवाईनंतर फॉलो-अप अपडेट करा.",
+    riskAlertMediumMessage: "उपचार प्रगती तपासा आणि लवकर फॉलो-अप अपडेट नोंदवा.",
+    riskAlertCaseLabel: "प्रकरण",
+    riskAlertDetectedOn: "ओळख दिनांक",
+    triggeredPriceAlertsTitle: "ट्रिगर झालेले किंमत अलर्ट",
+    triggeredPriceAlertsClear: "सध्या कोणतेही ट्रिगर किंमत अलर्ट नाहीत.",
+    triggeredPriceAlertsViewAll: "मार्केटमध्ये सर्व पहा",
+    notificationsTitle: "अलर्ट इनबॉक्स",
+    notificationsUnread: "न वाचलेले",
+    notificationsClear: "सध्या नवीन सूचना नाहीत.",
+    notificationsMarkRead: "वाचले म्हणून चिन्हांकित करा",
+    notificationsMarkAllRead: "सर्व वाचले म्हणून चिन्हांकित करा",
+    notificationsCreatedOn: "तयार दिनांक",
+    notificationsSettingsNav: "अलर्ट",
+    notificationsSettingsTitle: "सूचना सेटिंग्ज",
+    notificationsSettingsSubtitle: "प्रोअॅक्टिव अलर्ट कुठे घ्यायचे ते निवडा.",
+    notificationsSettingsLoadFailed: "सध्या सूचना सेटिंग्ज लोड करता आल्या नाहीत.",
+    notificationsSettingsSaved: "सूचना सेटिंग्ज यशस्वीरित्या अपडेट झाल्या.",
+    notificationsSettingsSave: "सेटिंग्ज जतन करा",
+    notificationsSettingsSaving: "जतन करत आहे...",
+    notificationsSettingsUpdatedAt: "शेवटचे अद्यतन",
+    notificationsSettingsInApp: "इन-अॅप अलर्ट",
+    notificationsSettingsSms: "SMS अलर्ट",
+    notificationsSettingsWhatsapp: "व्हॉट्सअॅप अलर्ट",
+    notificationsSettingsPush: "पुश अलर्ट",
+    notificationsSettingsSmsNumber: "SMS क्रमांक (उदा. +91...)",
+    notificationsSettingsWhatsappNumber: "व्हॉट्सअॅप क्रमांक (उदा. +91...)",
+    notificationsSettingsPushToken: "पुश टोकन",
+    notificationsSettingsDeliveryTitle: "डिलिव्हरी इतिहास",
+    notificationsSettingsDeliveryEmpty: "अद्याप कोणतेही डिलिव्हरी प्रयत्न नाहीत.",
+    notificationsSettingsSavedEndpoints: "जतन केलेले एंडपॉइंट (मास्क केलेले)",
+    notificationsSettingsRefreshNow: "रीफ्रेश",
+    notificationsSettingsLastRefresh: "शेवटचा रीफ्रेश",
+    notificationsSettingsAutoRefresh: "दर 20 सेकंदांनी ऑटो-रीफ्रेश",
+    notificationsSettingsProviderStatus: "प्रोव्हायडर स्थिती",
+    notificationsSettingsProviderRef: "प्रोव्हायडर संदर्भ",
+    notificationsSettingsProviderMessage: "प्रोव्हायडर संदेश",
+    notificationsSettingsPolicyTitle: "प्रोव्हायडर धोरण",
+    notificationsSettingsPolicyEmpty: "प्रोव्हायडर धोरण डेटा उपलब्ध नाही.",
+    notificationsSettingsPolicyEnabled: "सक्रिय",
+    notificationsSettingsPolicyDisabled: "निष्क्रिय",
+    notificationsSettingsConfiguredAttempts: "कॉन्फिगर प्रयत्न",
+    notificationsSettingsEffectiveAttempts: "प्रभावी प्रयत्न",
+    notificationsSettingsConfiguredBackoff: "कॉन्फिगर बॅकऑफ",
+    notificationsSettingsEffectiveBackoff: "प्रभावी बॅकऑफ",
+    notificationsSettingsRetry: "आत्ताच पुन्हा प्रयत्न करा",
+    notificationsSettingsRetrying: "पुन्हा प्रयत्न चालू आहे...",
+    notificationsSettingsRetrySuccess: "डिलिव्हरी पुन्हा प्रयत्न पाठवला गेला.",
+    notificationsSettingsRetryFailed: "हा डिलिव्हरी प्रयत्न पुन्हा करता आला नाही.",
+    timelineLoading: "टाइमलाइन लोड होत आहे...",
+    timelineStatusPending: "प्रलंबित",
+    timelineStatusInProgress: "प्रगतीत",
+    timelineStatusCompleted: "पूर्ण",
+    timelineStatusNeedsAttention: "लक्ष आवश्यक",
+    marketMandiLabel: "मंडी"
     
   }
 };

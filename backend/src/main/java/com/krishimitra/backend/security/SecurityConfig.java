@@ -46,10 +46,11 @@ public class SecurityConfig {
                     .requestMatchers("/api/auth/**", "/actuator/health", "/error").permitAll()
                     .requestMatchers(HttpMethod.GET,
                             "/api/weather", "/api/weather/**",
-                            "/api/market", "/api/market/**",
+                            "/api/market",
                             "/api/advisory", "/api/advisory/**",
                             "/api/crop/reports", "/api/crop/reports/**")
                     .permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/notifications/provider-callbacks/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/crop/detect").authenticated()
                     .anyRequest().authenticated())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
