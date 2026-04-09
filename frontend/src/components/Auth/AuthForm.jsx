@@ -24,7 +24,8 @@ function AuthForm({ mode, setUser, setToken, lang }) {
       navigate('/')
     } catch (err) {
       console.error('User authentication failed', err)
-      setError(t(lang, 'authFailed'))
+      const serverMessage = err?.response?.data?.message
+      setError(serverMessage || t(lang, 'authFailed'))
     } finally {
       setLoading(false)
     }

@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -119,6 +120,59 @@ class ApiSmokeIntegrationTest {
 
         Map<String, Object> loginBody = Map.of(
                 "email", email,
+                "password", "StrongPass123"
+        );
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginBody)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").isNotEmpty())
+                .andExpect(jsonPath("$.email").value(email));
+    }
+
+    @Test
+    void duplicateRegistrationReturnsStructuredBadRequest() throws Exception {
+        String email = "duplicate-" + UUID.randomUUID() + "@example.com";
+
+        Map<String, Object> registerBody = Map.of(
+                "name", "Farmer Duplicate",
+                "email", email,
+                "password", "StrongPass123",
+                "city", "Pune"
+        );
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerBody)))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerBody)))
+                .andExpect(status().isBadRequest())
+                .andExpect(header().string("X-Error-Code", "DUPLICATE_EMAIL"))
+                .andExpect(jsonPath("$.message").value("Email already registered"));
+    }
+
+    @Test
+    void loginIsCaseInsensitiveForEmail() throws Exception {
+        String email = "case-" + UUID.randomUUID() + "@example.com";
+
+        Map<String, Object> registerBody = Map.of(
+                "name", "Farmer Case",
+                "email", email,
+                "password", "StrongPass123",
+                "city", "Pune"
+        );
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(registerBody)))
+                .andExpect(status().isOk());
+
+        Map<String, Object> loginBody = Map.of(
+                "email", email.toUpperCase(),
                 "password", "StrongPass123"
         );
 

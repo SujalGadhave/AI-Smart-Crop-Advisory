@@ -6,7 +6,7 @@ import { getCropLabel } from '../../utils/formatters'
 import AdviceCard from './AdviceCard'
 import CompanionCard from './CompanionCard'
 
-function AdvisoryPage({ lang, token, lastReport }) {
+function AdvisoryPage({ lang, token: _token, lastReport }) {
   const [cropType, setCropType] = useState('tomato')
   const [advisory, setAdvisory] = useState(null)
   const [status, setStatus] = useState('')
