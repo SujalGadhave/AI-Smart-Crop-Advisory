@@ -8,6 +8,8 @@ services:
       MYSQL_DATABASE: krishi
       MYSQL_USER: krishi
       MYSQL_PASSWORD: krishi
+    volumes:
+      - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
     healthcheck:
@@ -18,11 +20,13 @@ services:
 
   ai-service:
     build: ./ai-service
+    restart: unless-stopped
     ports:
       - "8000:8000"
 
   backend:
     build: ./backend
+    restart: unless-stopped
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/krishi?allowPublicKeyRetrieval=true&useSSL=false
       SPRING_DATASOURCE_USERNAME: krishi
@@ -36,3 +40,18 @@ services:
         condition: service_started
     ports:
       - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ""
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "80:80"
+
+volumes:
+  mysql_data:
