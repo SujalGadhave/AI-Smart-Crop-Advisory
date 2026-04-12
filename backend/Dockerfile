@@ -11,4 +11,4 @@ WORKDIR /app
 COPY --from=build /app/target/krishimitra-backend-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 ENV AI_SERVICE_URL=http://ai-service:8000/predict
-CMD ["java", "-jar", "app.jar"]
+CMD ["sh", "-c", "if [ -z \"$SPRING_DATASOURCE_URL\" ] && [ -n \"$DATABASE_URL\" ]; then DB_NOPROTO=\"${DATABASE_URL#postgresql://}\"; DB_HOST_AND_DB=\"${DB_NOPROTO#*@}\"; export SPRING_DATASOURCE_URL=\"jdbc:postgresql://${DB_HOST_AND_DB}\"; fi; exec java -jar app.jar"]

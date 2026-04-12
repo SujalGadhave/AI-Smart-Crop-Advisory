@@ -91,6 +91,10 @@ For a fully free deployment path (frontend + backend + AI + MySQL) using one Alw
 
 - `DEPLOY_FREE.md`
 
+For fully free deployment on Render (with Free web services + Free Postgres), follow:
+
+- `DEPLOY_RENDER_FREE.md`
+
 ## API overview
 - `POST /api/auth/register` — create prototype user, returns JWT
 - `POST /api/auth/login` — authenticate and return JWT
