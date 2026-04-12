@@ -40,14 +40,11 @@ services:
       - key: CORS_ALLOWED_ORIGIN_PATTERNS
         sync: false
 
-  - type: static
+  - type: web
     name: krushimitra-frontend
     runtime: static
-    plan: free
-    region: oregon
-    rootDir: frontend
-    buildCommand: npm ci && npm run build
-    staticPublishPath: dist
+    buildCommand: cd frontend && npm ci && npm run build
+    staticPublishPath: frontend/dist
     autoDeployTrigger: commit
     envVars:
       - key: VITE_API_BASE_URL
