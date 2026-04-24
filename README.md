@@ -85,16 +85,6 @@ Services:
 - **backend** on `8080` (uses MySQL + AI service inside the network)
 - **frontend** on `80` (proxies `/api/*` to backend)
 
-## Free deployment
-
-For a fully free deployment path (frontend + backend + AI + MySQL) using one Always Free VM, follow:
-
-- `DEPLOY_FREE.md`
-
-For fully free deployment on Render (with Free web services + Free Postgres), follow:
-
-- `DEPLOY_RENDER_FREE.md`
-
 ## API overview
 - `POST /api/auth/register` — create prototype user, returns JWT
 - `POST /api/auth/login` — authenticate and return JWT
